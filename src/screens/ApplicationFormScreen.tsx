@@ -42,40 +42,42 @@ export default function ApplicationFormScreen({ route, navigation }: any) {
     };
 
     return (
-        <View style={[styles.container, { backgroundColor: colors.background }]}>
+        <View style={[styles.container, { backgroundColor: colors.background }]}> 
             <Header />
             <ScrollView contentContainerStyle={styles.scroll}>
                 {job && (
                     <Card backgroundColor={colors.card}>
-                        <Text style={[styles.applyingFor, { color: colors.text }]}>Applying for:</Text>
-                        <Text style={[styles.jobTitle, { color: colors.primary }]}>{job.title}</Text>
-                        <Text style={[styles.company, { color: colors.text }]}>{job.company}</Text>
+                        <Text style={[styles.applyingFor, { color: colors.subtext }]}>Applying for</Text>
+                        <Text style={[styles.jobTitle, { color: colors.text }]}>{job.title}</Text>
+                        <Text style={[styles.company, { color: colors.primary }]}>{job.company}</Text>
                     </Card>
                 )}
 
                 <Card backgroundColor={colors.card}>
-                    <Text style={[styles.label, { color: colors.text }]}>Full Name</Text>
+                    <Text style={[styles.sectionHeading, { color: colors.text }]}>Your details</Text>
+                    <Text style={[styles.label, { color: colors.subtext }]}>Full Name</Text>
                     <Input
                         value={name}
                         onChangeText={setName}
                         placeholder="Enter your full name"
                     />
 
-                    <Text style={[styles.label, { color: colors.text }]}>Email Address</Text>
+                    <Text style={[styles.label, { color: colors.subtext }]}>Email Address</Text>
                     <Input
                         value={email}
                         onChangeText={setEmail}
                         placeholder="Enter your email"
                     />
 
-                    <Text style={[styles.label, { color: colors.text }]}>Contact Number</Text>
+                    <Text style={[styles.label, { color: colors.subtext }]}>Contact Number</Text>
                     <Input
                         value={phone}
                         onChangeText={setPhone}
                         placeholder="Enter your phone number"
                     />
 
-                    <Text style={[styles.label, { color: colors.text }]}>Why should we hire you?</Text>
+                    <Text style={[styles.sectionHeading, { color: colors.text, marginTop: 12 }]}>Pitch</Text>
+                    <Text style={[styles.label, { color: colors.subtext }]}>Why should we hire you?</Text>
                     <Input
                         value={why}
                         onChangeText={setWhy}
@@ -84,7 +86,7 @@ export default function ApplicationFormScreen({ route, navigation }: any) {
                     />
 
                     <Button
-                        title="Submit Application"
+                        title="Submit application"
                         onPress={submit}
                         color={colors.primary}
                     />
@@ -97,8 +99,9 @@ export default function ApplicationFormScreen({ route, navigation }: any) {
 const styles = StyleSheet.create({
     container: { flex: 1 },
     scroll: { padding: 12, paddingBottom: 40 },
-    applyingFor: { fontSize: 13, marginBottom: 2 },
-    jobTitle: { fontSize: 16, fontWeight: 'bold' },
-    company: { fontSize: 14 },
-    label: { fontSize: 14, fontWeight: '600', marginTop: 8, marginBottom: 2 },
+    applyingFor: { fontSize: 12, marginBottom: 2 },
+    jobTitle: { fontSize: 18, fontWeight: '800', marginBottom: 2 },
+    company: { fontSize: 14, fontWeight: '700' },
+    sectionHeading: { fontSize: 16, fontWeight: '800', marginBottom: 6 },
+    label: { fontSize: 13, fontWeight: '600', marginTop: 8, marginBottom: 4 },
 });

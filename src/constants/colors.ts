@@ -1,13 +1,21 @@
 export const lightColors = {
-    background: '#F3F6F9',
+    background: '#F1F5FB',
     card: '#FFFFFF',
-    text: '#000',
-    primary: '#0A66C2',
+    text: '#0F172A',
+    subtext: '#4B5563',
+    border: '#E3E8EF',
+    primary: '#1F6FEB',
+    primaryMuted: '#E6EEFF',
+    shadow: 'rgba(15, 23, 42, 0.08)',
 };
 
 export const darkColors = {
-    background: '#121212',
-    card: '#1E1E1E',
-    text: '#FFF',
-    primary: '#4DA3FF',
+    background: '#0F172A',
+    card: '#1E293B',
+    text: '#E5E7EB',
+    subtext: '#94A3B8',
+    border: '#273449',
+    primary: '#60A5FA',
+    primaryMuted: '#1D4ED8',
+    shadow: 'rgba(0, 0, 0, 0.28)',
 };
