@@ -1,5 +1,5 @@
-import React, { useState, useContext } from 'react';
-import { View, Text, Alert, StyleSheet, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
+import React, { useState, useContext, useRef } from 'react';
+import { View, Text, Alert, StyleSheet, ScrollView, KeyboardAvoidingView, Platform, Animated, Easing } from 'react-native';
 import { isEmailValid, isPhoneValid, isNotEmpty } from '../utils/validators';
 import { ThemeContext } from '../context/ThemeContext';
 import Header from '../components/Header';
@@ -15,6 +15,16 @@ export default function ApplicationFormScreen({ route, navigation }: any) {
     const [email, setEmail] = useState('');
     const [phone, setPhone] = useState('');
     const [why, setWhy] = useState('');
+    const fadeAnim = useRef(new Animated.Value(0)).current;
+
+    React.useEffect(() => {
+        Animated.timing(fadeAnim, {
+            toValue: 1,
+            duration: 260,
+            easing: Easing.out(Easing.quad),
+            useNativeDriver: true,
+        }).start();
+    }, [fadeAnim]);
 
     const submit = () => {
         if (!isNotEmpty(name)) return Alert.alert('Validation Error', 'Name is required.');
@@ -59,6 +69,7 @@ export default function ApplicationFormScreen({ route, navigation }: any) {
                     keyboardDismissMode="on-drag"
                     automaticallyAdjustKeyboardInsets
                 >
+                    <Animated.View style={{ opacity: fadeAnim, transform: [{ translateY: fadeAnim.interpolate({ inputRange: [0, 1], outputRange: [12, 0] }) }] }}>
                     {job && (
                         <Card backgroundColor={colors.card}>
                             <Text style={[styles.applyingFor, { color: colors.subtext }]}>Applying for</Text>
@@ -105,6 +116,7 @@ export default function ApplicationFormScreen({ route, navigation }: any) {
                             color={colors.primary}
                         />
                     </Card>
+                    </Animated.View>
                 </ScrollView>
             </KeyboardAvoidingView>
         </View>

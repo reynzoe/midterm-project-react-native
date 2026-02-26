@@ -82,19 +82,19 @@ export default function JobCard({ job, onApply, onPress }: JobCardProps) {
             ) : null}
 
             <View style={styles.actionsRow}>
-                <TouchableOpacity style={[styles.quickApplyBtn, { backgroundColor: colors.primary }]} onPress={onApply} activeOpacity={0.9}>
-                    <Text style={styles.quickApplyText}>Quick Apply</Text>
-                </TouchableOpacity>
                 <TouchableOpacity
-                    style={[
-                        styles.saveBtn,
-                        { borderColor: isSaved ? colors.primary : colors.border, backgroundColor: isSaved ? colors.primaryMuted : 'transparent' },
-                    ]}
-                    onPress={handleSaveToggle}
+                    style={[styles.quickApplyBtn, { backgroundColor: colors.primary }]}
+                    onPress={onApply}
                     activeOpacity={0.9}
                 >
-                    <Text style={[styles.saveBtnText, { color: isSaved ? colors.primary : colors.text }]}>{isSaved ? 'Saved' : 'Save'}</Text>
+                    <Text style={styles.quickApplyText}>Quick Apply</Text>
                 </TouchableOpacity>
+                {onPress ? (
+                    <TouchableOpacity style={styles.learnMoreBtn} onPress={onPress} activeOpacity={0.85}>
+                        <Text style={[styles.learnMoreText, { color: colors.primary }]}>Learn more</Text>
+                        <Feather name="arrow-right" size={14} color={colors.primary} />
+                    </TouchableOpacity>
+                ) : null}
             </View>
         </TouchableOpacity>
     );

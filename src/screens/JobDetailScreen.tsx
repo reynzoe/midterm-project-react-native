@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useMemo } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import Header from '../components/Header';
@@ -15,6 +15,14 @@ export default function JobDetailScreen({ route, navigation }: any) {
         if (isSaved) removeJob(job.id);
         else saveJob(job);
     };
+
+    const paragraphs = useMemo(
+        () => (job.description || '')
+            .split(/\n+/)
+            .map(p => p.trim())
+            .filter(Boolean),
+        [job.description],
+    );
 
     return (
         <View style={[styles.container, { backgroundColor: colors.background }]}>
@@ -47,8 +55,18 @@ export default function JobDetailScreen({ route, navigation }: any) {
                             </View>
                         ) : null}
                     </View>
-                    {job.description ? (
-                        <Text style={[styles.description, { color: colors.subtext }]}>{job.description}</Text>
+                    {paragraphs.length ? (
+                        <View style={styles.descriptionBlock}>
+                            <Text style={[styles.sectionHeading, { color: colors.text }]}>Role details</Text>
+                            {paragraphs.map((p: string, idx: number) => (
+                                <Text
+                                    key={idx}
+                                    style={[styles.description, { color: colors.subtext }]}
+                                >
+                                    {p}
+                                </Text>
+                            ))}
+                        </View>
                     ) : null}
                     <View style={styles.actionsRow}>
                         <TouchableOpacity
@@ -107,6 +125,8 @@ const styles = StyleSheet.create({
     },
     metaText: { fontSize: 12, fontWeight: '700' },
     description: { marginTop: 12, fontSize: 14, lineHeight: 20 },
+    descriptionBlock: { marginTop: 14, gap: 8 },
+    sectionHeading: { fontSize: 16, fontWeight: '800' },
     actionsRow: { flexDirection: 'row', gap: 12, marginTop: 16 },
     primaryBtn: { flex: 1, height: 48, borderRadius: 12, alignItems: 'center', justifyContent: 'center' },
     primaryText: { color: '#fff', fontWeight: '700', fontSize: 15 },

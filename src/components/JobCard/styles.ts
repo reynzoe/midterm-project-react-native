@@ -21,6 +21,7 @@ const styles = StyleSheet.create({
         borderRadius: 24,
         alignItems: 'center',
         justifyContent: 'center',
+        backgroundColor: '#FFE8DC', // light coral wash
     },
     logoText: {
         fontWeight: '800',
@@ -75,14 +76,25 @@ const styles = StyleSheet.create({
         fontSize: 13,
         lineHeight: 18,
     },
+    learnMoreRow: {
+        marginTop: 8,
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 6,
+    },
+    learnMoreText: {
+        fontSize: 13,
+        fontWeight: '700',
+    },
     actionsRow: {
         flexDirection: 'row',
         gap: 10,
         marginTop: 12,
+        alignItems: 'center',
     },
     quickApplyBtn: {
-        flex: 1,
-        height: 46,
+        flex: 0.55,
+        height: 42,
         borderRadius: 12,
         alignItems: 'center',
         justifyContent: 'center',
@@ -90,19 +102,24 @@ const styles = StyleSheet.create({
     quickApplyText: {
         color: '#FFFFFF',
         fontWeight: '700',
-        fontSize: 14,
+        fontSize: 13,
     },
-    saveBtn: {
-        paddingHorizontal: 16,
-        height: 46,
-        borderRadius: 12,
-        borderWidth: 1,
+    learnMoreBtn: {
+        flexDirection: 'row',
         alignItems: 'center',
+        gap: 6,
+        paddingHorizontal: 12,
+        height: 42,
+        borderRadius: 10,
+        borderWidth: 1,
+        borderColor: '#FFE2C2',
+        backgroundColor: '#FFFCF6',
+        flex: 0.45,
         justifyContent: 'center',
     },
-    saveBtnText: {
+    learnMoreText: {
+        fontSize: 13,
         fontWeight: '700',
-        fontSize: 14,
     },
 });
 
