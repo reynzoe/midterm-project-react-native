@@ -7,5 +7,11 @@ interface ToggleSwitchProps {
 }
 
 export default function ToggleSwitch({ value, onValueChange }: ToggleSwitchProps) {
-    return <Switch value={value} onValueChange={onValueChange} />;
+    return (
+        <Switch
+            value={value}
+            onValueChange={onValueChange}
+            style={{ transform: [{ scale: 0.8 }] }}
+        />
+    );
 }

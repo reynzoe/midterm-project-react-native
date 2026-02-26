@@ -11,7 +11,13 @@ export default function SavedJobsScreen({ navigation }: any) {
 
     return (
         <View style={[styles.container, { backgroundColor: colors.background }]}>
-            <Header />
+            <Header
+                showHome
+                onHomePress={() => navigation.reset({
+                    index: 0,
+                    routes: [{ name: 'JobFinder' }],
+                })}
+            />
             <FlatList
                 data={savedJobs}
                 keyExtractor={item => item.id}
@@ -47,6 +53,7 @@ export default function SavedJobsScreen({ navigation }: any) {
                     <JobCard
                         job={item}
                         onApply={() => navigation.navigate('Apply', { job: item, fromSaved: true })}
+                        onPress={() => navigation.navigate('JobDetail', { job: item })}
                     />
                 )}
                 ListEmptyComponent={

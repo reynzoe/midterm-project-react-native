@@ -42,7 +42,12 @@ export default function ApplicationFormScreen({ route, navigation }: any) {
 
     return (
         <View style={[styles.container, { backgroundColor: colors.background }]}> 
-            <Header />
+            <Header
+                showBack
+                onBackPress={() => navigation.goBack()}
+                showHome
+                onHomePress={() => navigation.reset({ index: 0, routes: [{ name: 'JobFinder' }] })}
+            />
             <KeyboardAvoidingView
                 style={{ flex: 1 }}
                 behavior={Platform.OS === 'ios' ? 'padding' : 'height'}

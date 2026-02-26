@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10,
         paddingVertical: 6,
         borderRadius: 10,
-        backgroundColor: '#F8FAFC',
+        backgroundColor: '#F5F0E9', // sand chip
     },
     metaText: {
         fontSize: 12,

@@ -9,9 +9,10 @@ import styles from './styles';
 interface JobCardProps {
     job: Job;
     onApply: () => void;
+    onPress?: () => void;
 }
 
-export default function JobCard({ job, onApply }: JobCardProps) {
+export default function JobCard({ job, onApply, onPress }: JobCardProps) {
     const { saveJob, removeJob, savedJobs } = useContext(JobsContext);
     const { colors } = useContext(ThemeContext);
 
@@ -31,11 +32,15 @@ export default function JobCard({ job, onApply }: JobCardProps) {
     }, [job.company, job.title]);
 
     return (
-        <View style={[styles.card, {
+        <TouchableOpacity
+            activeOpacity={0.9}
+            onPress={onPress}
+            style={[styles.card, {
             backgroundColor: colors.card,
             borderColor: colors.border,
             shadowColor: colors.shadow,
-        }]}>
+        }]}
+        >
             <View style={styles.topRow}>
                 <View style={[styles.logoCircle, { backgroundColor: colors.primaryMuted }]}>
                     <Text style={[styles.logoText, { color: colors.primary }]}>{initials}</Text>
@@ -53,10 +58,6 @@ export default function JobCard({ job, onApply }: JobCardProps) {
                                 <Text style={[styles.metaText, { color: '#16A34A' }]} numberOfLines={1}>{job.salary}</Text>
                             </View>
                         ) : null}
-                        <View style={styles.metaChip}>
-                            <Feather name="clock" size={13} color={colors.subtext} />
-                            <Text style={[styles.metaText, { color: colors.subtext }]} numberOfLines={1}>Recently</Text>
-                        </View>
                         {job.location ? (
                             <View style={styles.metaChip}>
                                 <Feather name="map-pin" size={13} color={colors.subtext} />
@@ -95,6 +96,6 @@ export default function JobCard({ job, onApply }: JobCardProps) {
                     <Text style={[styles.saveBtnText, { color: isSaved ? colors.primary : colors.text }]}>{isSaved ? 'Saved' : 'Save'}</Text>
                 </TouchableOpacity>
             </View>
-        </View>
+        </TouchableOpacity>
     );
 }

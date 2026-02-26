@@ -5,12 +5,13 @@ import { fetchJobs } from '../services/jobService';
 import { ThemeContext } from '../context/ThemeContext';
 import JobCard from '../components/JobCard';
 import { Job } from '../types/job';
+import ToggleSwitch from '../components/ui/ToggleSwitch';
 import styles from './JobFinderScreen.styles';
 
 export default function JobFinderScreen({ navigation }: any) {
     const [jobs, setJobs] = useState<Job[]>([]);
     const [search, setSearch] = useState('');
-    const { colors } = useContext(ThemeContext);
+    const { colors, isDark, toggleTheme } = useContext(ThemeContext);
 
     useEffect(() => {
         fetchJobs().then(setJobs);
@@ -45,13 +46,16 @@ export default function JobFinderScreen({ navigation }: any) {
                                         <Text style={styles.heroKicker}>Browse curated roles</Text>
                                         <Text style={styles.heroTitle}>find your dream job</Text>
                                     </View>
-                                    <TouchableOpacity
-                                        style={styles.heroIconBtn}
-                                        onPress={() => navigation.navigate('SavedJobs')}
-                                        activeOpacity={0.85}
-                                    >
-                                        <Feather name="bookmark" size={18} color="#FFFFFF" />
-                                    </TouchableOpacity>
+                                    <View style={styles.heroActions}>
+                                        <ToggleSwitch value={isDark} onValueChange={toggleTheme} />
+                                        <TouchableOpacity
+                                            style={styles.heroIconBtn}
+                                            onPress={() => navigation.navigate('SavedJobs')}
+                                            activeOpacity={0.85}
+                                        >
+                                            <Feather name="bookmark" size={18} color="#FFFFFF" />
+                                        </TouchableOpacity>
+                                    </View>
                                 </View>
                                 <View style={styles.heroSubtitleRow}>
                                     <Text style={styles.heroSubtitle}>Clean, modern picks refreshed hourly.</Text>
@@ -70,7 +74,7 @@ export default function JobFinderScreen({ navigation }: any) {
                                         />
                                     </View>
                                     <TouchableOpacity
-                                        style={styles.searchButton}
+                                        style={[styles.searchButton, { backgroundColor: colors.primary, shadowColor: colors.primary }]}
                                         onPress={() => Keyboard.dismiss()}
                                         activeOpacity={0.9}
                                     >
@@ -122,6 +126,7 @@ export default function JobFinderScreen({ navigation }: any) {
                     <JobCard
                         job={item}
                         onApply={() => navigation.navigate('Apply', { job: item })}
+                        onPress={() => navigation.navigate('JobDetail', { job: item })}
                     />
                 )}
             />

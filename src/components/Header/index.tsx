@@ -1,9 +1,17 @@
 import React, { useContext } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { Feather } from '@expo/vector-icons';
 import ToggleSwitch from '../ui/ToggleSwitch';
 import { ThemeContext } from '../../context/ThemeContext';
 
-export default function Header() {
+interface HeaderProps {
+    showBack?: boolean;
+    onBackPress?: () => void;
+    showHome?: boolean;
+    onHomePress?: () => void;
+}
+
+export default function Header({ showBack = false, onBackPress, showHome = false, onHomePress }: HeaderProps) {
     const { isDark, toggleTheme, colors } = useContext(ThemeContext);
 
     return (
@@ -12,11 +20,25 @@ export default function Header() {
             borderBottomColor: colors.border,
             shadowColor: colors.shadow,
         }]}> 
-            <View>
-                <Text style={[styles.title, { color: colors.text }]}>Job Finder</Text>
-                <Text style={[styles.subtitle, { color: colors.subtext }]}>Find your next move faster</Text>
+            <View style={styles.leftRow}>
+                {showBack && (
+                    <TouchableOpacity onPress={onBackPress} style={styles.iconBtn}>
+                        <Feather name="arrow-left" size={18} color={colors.text} />
+                    </TouchableOpacity>
+                )}
+                <View>
+                    <Text style={[styles.title, { color: colors.text }]}>Aspire</Text>
+                    <Text style={[styles.subtitle, { color: colors.subtext }]}>Find your next move faster</Text>
+                </View>
             </View>
-            <ToggleSwitch value={isDark} onValueChange={toggleTheme} />
+            <View style={styles.rightRow}>
+                {showHome && (
+                    <TouchableOpacity onPress={onHomePress} style={styles.iconBtn}>
+                        <Feather name="home" size={18} color={colors.text} />
+                    </TouchableOpacity>
+                )}
+                <ToggleSwitch value={isDark} onValueChange={toggleTheme} />
+            </View>
         </View>
     );
 }
@@ -34,6 +56,16 @@ const styles = StyleSheet.create({
         shadowRadius: 18,
         elevation: 2,
     },
+    leftRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 10,
+    },
+    rightRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 10,
+    },
     title: {
         fontSize: 20,
         fontWeight: '800',
@@ -41,6 +73,12 @@ const styles = StyleSheet.create({
     },
     subtitle: {
         fontSize: 12,
-        marginTop: 2,
+    },
+    iconBtn: {
+        width: 34,
+        height: 34,
+        borderRadius: 17,
+        alignItems: 'center',
+        justifyContent: 'center',
     },
 });
