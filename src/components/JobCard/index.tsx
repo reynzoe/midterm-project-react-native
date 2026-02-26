@@ -11,10 +11,17 @@ interface JobCardProps {
 }
 
 export default function JobCard({ job, onApply }: JobCardProps) {
-    const { saveJob, savedJobs } = useContext(JobsContext);
+    const { saveJob, removeJob, savedJobs } = useContext(JobsContext);
     const { colors } = useContext(ThemeContext);
 
     const isSaved = savedJobs.find(j => j.id === job.id);
+    const handleSaveToggle = () => {
+        if (isSaved) {
+            removeJob(job.id);
+        } else {
+            saveJob(job);
+        }
+    };
 
     return (
         <View style={[styles.card, {
@@ -52,8 +59,8 @@ export default function JobCard({ job, onApply }: JobCardProps) {
 
             <View style={styles.actionsRow}>
                 <Button
-                    title={isSaved ? 'Saved' : 'Save'}
-                    onPress={() => saveJob(job)}
+                    title={isSaved ? 'Unsave' : 'Save'}
+                    onPress={handleSaveToggle}
                     color={colors.primaryMuted}
                     textColor={colors.primary}
                     variant="ghost"

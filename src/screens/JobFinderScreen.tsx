@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { View, FlatList, StyleSheet, Text } from 'react-native';
+import { View, FlatList, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { fetchJobs } from '../services/jobService';
 import { ThemeContext } from '../context/ThemeContext';
 import Header from '../components/Header';
@@ -25,8 +25,18 @@ export default function JobFinderScreen({ navigation }: any) {
         <View style={[styles.container, { backgroundColor: colors.background }]}> 
             <Header />
             <View style={styles.content}>
-                <Text style={[styles.sectionTitle, { color: colors.text }]}>Discover roles</Text>
-                <Text style={[styles.sectionSubtitle, { color: colors.subtext }]}>Curated picks refreshed hourly.</Text>
+                <View style={styles.headingRow}>
+                    <View>
+                        <Text style={[styles.sectionTitle, { color: colors.text }]}>Discover roles</Text>
+                        <Text style={[styles.sectionSubtitle, { color: colors.subtext }]}>Curated picks refreshed hourly.</Text>
+                    </View>
+                    <TouchableOpacity
+                        onPress={() => navigation.navigate('SavedJobs')}
+                        style={[styles.savedLink, { borderColor: colors.border, backgroundColor: colors.card }]}
+                    >
+                        <Text style={[styles.savedLinkText, { color: colors.primary }]}>Saved jobs</Text>
+                    </TouchableOpacity>
+                </View>
                 <SearchBar value={search} onChangeText={setSearch} />
                 <FlatList
                     data={filtered}
@@ -48,6 +58,22 @@ export default function JobFinderScreen({ navigation }: any) {
 const styles = StyleSheet.create({
     container: { flex: 1 },
     content: { flex: 1, paddingHorizontal: 16, paddingTop: 12 },
+    headingRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        gap: 10,
+    },
     sectionTitle: { fontSize: 18, fontWeight: '800', marginBottom: 4 },
     sectionSubtitle: { fontSize: 13, marginBottom: 8 },
+    savedLink: {
+        paddingHorizontal: 12,
+        paddingVertical: 8,
+        borderRadius: 10,
+        borderWidth: 1,
+    },
+    savedLinkText: {
+        fontWeight: '700',
+        fontSize: 13,
+    },
 });

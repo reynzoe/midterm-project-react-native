@@ -1,4 +1,5 @@
 import React, { createContext, useState, ReactNode } from 'react';
+import { Alert } from 'react-native';
 import { Job } from '../types/job';
 
 interface JobsContextType {
@@ -13,10 +14,23 @@ export const JobsProvider = ({ children }: { children: ReactNode }) => {
     const [savedJobs, setSavedJobs] = useState<Job[]>([]);
 
     const saveJob = (job: Job) => {
-        const exists = savedJobs.find(j => j.id === job.id);
-        if (!exists) {
-            setSavedJobs(prev => [...prev, job]);
+        const isDuplicate = savedJobs.some(
+            j =>
+                j.id === job.id ||
+                (j.title.toLowerCase().trim() === job.title.toLowerCase().trim() &&
+                    j.company.toLowerCase().trim() === job.company.toLowerCase().trim())
+        );
+
+        if (isDuplicate) {
+            Alert.alert(
+                'Already Saved',
+                `"${job.title}" at ${job.company} is already in your saved jobs. Each job can only be saved once.`,
+                [{ text: 'Got it' }]
+            );
+            return;
         }
+
+        setSavedJobs(prev => [...prev, job]);
     };
 
     const removeJob = (id: string) => {

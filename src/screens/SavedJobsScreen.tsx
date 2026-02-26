@@ -19,7 +19,10 @@ export default function SavedJobsScreen({ navigation }: any) {
                 ListHeaderComponent={
                     <View>
                         <TouchableOpacity
-                            onPress={() => navigation.navigate('JobFinder')}
+                            onPress={() => navigation.reset({
+                                index: 0,
+                                routes: [{ name: 'JobFinder' }],
+                            })}
                             style={[styles.backBtn, { borderColor: colors.border }]}
                         >
                             <Text style={{ fontSize: 18, color: colors.text }}>‹</Text>
@@ -54,7 +57,10 @@ export default function SavedJobsScreen({ navigation }: any) {
                             Tap the bookmark on a job card to keep it here for later.
                         </Text>
                         <TouchableOpacity
-                            onPress={() => navigation.navigate('JobFinder')}
+                            onPress={() => navigation.reset({
+                                index: 0,
+                                routes: [{ name: 'JobFinder' }],
+                            })}
                             style={[styles.browseBtn, { backgroundColor: colors.primary }]}
                         >
                             <Text style={styles.browseBtnText}>Browse jobs</Text>
