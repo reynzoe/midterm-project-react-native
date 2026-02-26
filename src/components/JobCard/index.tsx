@@ -1,9 +1,10 @@
-import React, { useContext } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import Button from '../ui/Button';
+import React, { useContext, useMemo } from 'react';
+import { View, Text, TouchableOpacity } from 'react-native';
+import { Ionicons, Feather } from '@expo/vector-icons';
 import { JobsContext } from '../../context/JobsContext';
 import { ThemeContext } from '../../context/ThemeContext';
 import { Job } from '../../types/job';
+import styles from './styles';
 
 interface JobCardProps {
     job: Job;
@@ -23,118 +24,77 @@ export default function JobCard({ job, onApply }: JobCardProps) {
         }
     };
 
+    const initials = useMemo(() => {
+        const first = job.company?.[0] ?? '';
+        const second = job.title?.[0] ?? '';
+        return (first + second).toUpperCase();
+    }, [job.company, job.title]);
+
     return (
         <View style={[styles.card, {
             backgroundColor: colors.card,
             borderColor: colors.border,
             shadowColor: colors.shadow,
-        }]}> 
-            <View style={styles.headerRow}>
-                <Text style={[styles.title, { color: colors.text }]} numberOfLines={2}>{job.title}</Text>
-                <View style={[styles.badge, { backgroundColor: colors.primaryMuted }]}> 
-                    <Text style={[styles.badgeText, { color: colors.primary }]}>New</Text>
+        }]}>
+            <View style={styles.topRow}>
+                <View style={[styles.logoCircle, { backgroundColor: colors.primaryMuted }]}>
+                    <Text style={[styles.logoText, { color: colors.primary }]}>{initials}</Text>
                 </View>
-            </View>
-
-            <Text style={[styles.company, { color: colors.primary }]}>{job.company}</Text>
-
-            <View style={styles.metaRow}>
-                {job.location && (
-                    <Text style={[styles.meta, { color: colors.subtext }]} numberOfLines={1}>
-                        📍 {job.location}
-                    </Text>
-                )}
-                {job.salary && (
-                    <View style={[styles.chip, { backgroundColor: colors.primaryMuted }]}> 
-                        <Text style={[styles.chipText, { color: colors.primary }]}>{job.salary}</Text>
+                <View style={{ flex: 1, marginLeft: 12 }}>
+                    <Text style={[styles.title, { color: colors.text }]} numberOfLines={2}>{job.title}</Text>
+                    <View style={styles.companyRow}>
+                        <Feather name="briefcase" size={14} color={colors.subtext} />
+                        <Text style={[styles.company, { color: colors.subtext }]} numberOfLines={1}>{job.company}</Text>
                     </View>
-                )}
+                    <View style={styles.metaRow}>
+                        {job.salary ? (
+                            <View style={styles.metaChip}>
+                                <Feather name="dollar-sign" size={13} color="#16A34A" />
+                                <Text style={[styles.metaText, { color: '#16A34A' }]} numberOfLines={1}>{job.salary}</Text>
+                            </View>
+                        ) : null}
+                        <View style={styles.metaChip}>
+                            <Feather name="clock" size={13} color={colors.subtext} />
+                            <Text style={[styles.metaText, { color: colors.subtext }]} numberOfLines={1}>Recently</Text>
+                        </View>
+                        {job.location ? (
+                            <View style={styles.metaChip}>
+                                <Feather name="map-pin" size={13} color={colors.subtext} />
+                                <Text style={[styles.metaText, { color: colors.subtext }]} numberOfLines={1}>{job.location}</Text>
+                            </View>
+                        ) : null}
+                    </View>
+                </View>
+                <TouchableOpacity onPress={handleSaveToggle} style={styles.saveIconBtn} activeOpacity={0.85}>
+                    <Ionicons
+                        name={isSaved ? 'heart' : 'heart-outline'}
+                        size={20}
+                        color={isSaved ? colors.primary : colors.subtext}
+                    />
+                </TouchableOpacity>
             </View>
 
             {job.description ? (
-                <Text style={[styles.description, { color: colors.subtext }]} numberOfLines={3}>
+                <Text style={[styles.description, { color: colors.subtext }]} numberOfLines={2}>
                     {job.description}
                 </Text>
             ) : null}
 
             <View style={styles.actionsRow}>
-                <Button
-                    title={isSaved ? 'Unsave' : 'Save'}
+                <TouchableOpacity style={[styles.quickApplyBtn, { backgroundColor: colors.primary }]} onPress={onApply} activeOpacity={0.9}>
+                    <Text style={styles.quickApplyText}>Quick Apply</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                    style={[
+                        styles.saveBtn,
+                        { borderColor: isSaved ? colors.primary : colors.border, backgroundColor: isSaved ? colors.primaryMuted : 'transparent' },
+                    ]}
                     onPress={handleSaveToggle}
-                    color={colors.primaryMuted}
-                    textColor={colors.primary}
-                    variant="ghost"
-                />
-                <Button title="Apply" onPress={onApply} color={colors.primary} />
+                    activeOpacity={0.9}
+                >
+                    <Text style={[styles.saveBtnText, { color: isSaved ? colors.primary : colors.text }]}>{isSaved ? 'Saved' : 'Save'}</Text>
+                </TouchableOpacity>
             </View>
         </View>
     );
 }
-
-const styles = StyleSheet.create({
-    card: {
-        padding: 14,
-        borderRadius: 12,
-        marginVertical: 6,
-        borderWidth: 1,
-        shadowOpacity: 0.08,
-        shadowOffset: { width: 0, height: 6 },
-        shadowRadius: 14,
-        elevation: 2,
-    },
-    headerRow: {
-        flexDirection: 'row',
-        alignItems: 'flex-start',
-        justifyContent: 'space-between',
-        gap: 8,
-    },
-    title: {
-        fontWeight: '800',
-        fontSize: 16,
-        flex: 1,
-    },
-    badge: {
-        paddingHorizontal: 10,
-        paddingVertical: 4,
-        borderRadius: 999,
-    },
-    badgeText: {
-        fontSize: 11,
-        fontWeight: '700',
-    },
-    company: {
-        marginTop: 4,
-        fontSize: 14,
-        fontWeight: '700',
-    },
-    metaRow: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        marginTop: 6,
-    },
-    meta: {
-        fontSize: 13,
-        flex: 1,
-    },
-    chip: {
-        paddingHorizontal: 10,
-        paddingVertical: 5,
-        borderRadius: 8,
-        marginLeft: 10,
-    },
-    chipText: {
-        fontSize: 12,
-        fontWeight: '700',
-    },
-    description: {
-        marginTop: 8,
-        fontSize: 13,
-        lineHeight: 18,
-    },
-    actionsRow: {
-        flexDirection: 'row',
-        gap: 10,
-        marginTop: 12,
-    },
-});
