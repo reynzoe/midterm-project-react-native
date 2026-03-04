@@ -33,22 +33,22 @@ export const fetchJobs = async () => {
         throw new Error('Unexpected API response shape');
     }
 
+    const idCounts = new Map<string, number>();
+
     const mapped = jobList.map((job: any) => {
         const title = job.title ?? job.jobTitle ?? 'Unknown Title';
         const company = job.company ?? job.companyName ?? 'Unknown Company';
         const location = job.location ?? job.jobLocation ?? null;
         const salary = job.salary ?? job.salaryRange ?? null;
         const description = stripHtmlDescription(job.description ?? job.jobDescription ?? '');
-        const id = makeDeterministicId(title, company, location, salary, description);
+        const baseId = makeDeterministicId(title, company, location, salary, description);
+        const count = (idCounts.get(baseId) ?? 0) + 1;
+        idCounts.set(baseId, count);
+        const id = count === 1 ? baseId : `${baseId}-${count}`;
 
         return { id, title, company, location, salary, description };
     });
 
-    // Deduplicate by id in case the API returns exact duplicates
-    const uniqueById = new Map<string, typeof mapped[number]>();
-    mapped.forEach(job => {
-        if (!uniqueById.has(job.id)) uniqueById.set(job.id, job);
-    });
-
-    return Array.from(uniqueById.values());
+    // Keep duplicates (some feeds intentionally repeat) while ensuring unique ids
+    return mapped;
 };

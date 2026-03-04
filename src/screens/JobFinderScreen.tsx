@@ -9,13 +9,14 @@ import ToggleSwitch from '../components/ui/ToggleSwitch';
 import styles from './JobFinderScreen.styles';
 
 type RecentSearch = { query: string };
+type SortBy = 'none' | 'company' | 'title';
 
 export default function JobFinderScreen({ navigation }: any) {
     const [jobs, setJobs] = useState<Job[]>([]);
     const [search, setSearch] = useState('');
     const [recentSearches, setRecentSearches] = useState<RecentSearch[]>([]);
     const [seniority, setSeniority] = useState<'any' | 'junior' | 'senior'>('any');
-    const [sortBy, setSortBy] = useState<'company' | 'title'>('company');
+    const [sortBy, setSortBy] = useState<SortBy>('none');
     const [showFilters, setShowFilters] = useState(false);
     const filterAnim = useRef(new Animated.Value(0)).current;
     const { colors, isDark, toggleTheme } = useContext(ThemeContext);
@@ -60,45 +61,52 @@ export default function JobFinderScreen({ navigation }: any) {
     };
 
     const filtered = jobs
-        .filter(job =>
-            job.title?.toLowerCase().includes(search.toLowerCase()) ||
-            job.company?.toLowerCase().includes(search.toLowerCase())
-        )
-        .filter(matchesSeniority)
-        .sort((a, b) => {
+        .filter(job => {
+            const needle = search.trim().toLowerCase();
+            if (!needle) return true;
+            return (
+                job.title?.toLowerCase().includes(needle) ||
+                job.company?.toLowerCase().includes(needle)
+            );
+        })
+        .filter(matchesSeniority);
+
+    const sorted = sortBy === 'none'
+        ? filtered
+        : [...filtered].sort((a, b) => {
             switch (sortBy) {
-                case 'company':
-                    {
-                        const compA = sortKey(a.company);
-                        const compB = sortKey(b.company);
-                        if (!compA && compB) return 1;  // push missing company down
-                        if (compA && !compB) return -1;
-                        const cmpCompany = collator.compare(compA, compB);
-                        if (cmpCompany !== 0) return cmpCompany;
+                case 'company': {
+                    const compA = sortKey(a.company);
+                    const compB = sortKey(b.company);
+                    if (!compA && compB) return 1;  // push missing company down
+                    if (compA && !compB) return -1;
+                    const cmpCompany = collator.compare(compA, compB);
+                    if (cmpCompany !== 0) return cmpCompany;
 
-                        const titleA = sortKey(a.title);
-                        const titleB = sortKey(b.title);
-                        const cmpTitle = collator.compare(titleA, titleB);
-                        if (cmpTitle !== 0) return cmpTitle;
+                    const titleA = sortKey(a.title);
+                    const titleB = sortKey(b.title);
+                    const cmpTitle = collator.compare(titleA, titleB);
+                    if (cmpTitle !== 0) return cmpTitle;
 
-                        return collator.compare(a.id, b.id);
-                    }
-                case 'title':
-                    {
-                        const titleA = sortKey(a.title);
-                        const titleB = sortKey(b.title);
-                        if (!titleA && titleB) return 1; // push missing title down
-                        if (titleA && !titleB) return -1;
-                        const cmpTitle = collator.compare(titleA, titleB);
-                        if (cmpTitle !== 0) return cmpTitle;
+                    return collator.compare(a.id, b.id);
+                }
+                case 'title': {
+                    const titleA = sortKey(a.title);
+                    const titleB = sortKey(b.title);
+                    if (!titleA && titleB) return 1; // push missing title down
+                    if (titleA && !titleB) return -1;
+                    const cmpTitle = collator.compare(titleA, titleB);
+                    if (cmpTitle !== 0) return cmpTitle;
 
-                        const compA = sortKey(a.company);
-                        const compB = sortKey(b.company);
-                        const cmpCompany = collator.compare(compA, compB);
-                        if (cmpCompany !== 0) return cmpCompany;
+                    const compA = sortKey(a.company);
+                    const compB = sortKey(b.company);
+                    const cmpCompany = collator.compare(compA, compB);
+                    if (cmpCompany !== 0) return cmpCompany;
 
-                        return collator.compare(a.id, b.id);
-                    }
+                    return collator.compare(a.id, b.id);
+                }
+                default:
+                    return 0;
             }
         });
 
@@ -133,7 +141,7 @@ export default function JobFinderScreen({ navigation }: any) {
     return (
         <View style={[styles.container, { backgroundColor: colors.background }]}>
             <FlatList
-                data={filtered}
+                data={sorted}
                 keyExtractor={(item) => item.id}
                 contentContainerStyle={{ paddingBottom: 28 }}
                 ListHeaderComponent={
@@ -288,7 +296,7 @@ export default function JobFinderScreen({ navigation }: any) {
                                                 styles.chip,
                                                 sortBy === opt.key ? [styles.chipActive, { borderColor: colors.primary, backgroundColor: colors.primaryMuted }] : { borderColor: colors.border },
                                             ]}
-                                            onPress={() => setSortBy(opt.key)}
+                                            onPress={() => setSortBy(prev => prev === opt.key ? 'none' : opt.key)}
                                             activeOpacity={0.85}
                                         >
                                             <Text style={[

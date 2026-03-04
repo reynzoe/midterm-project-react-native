@@ -1,7 +1,6 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef , useContext } from 'react';
 import { TouchableOpacity, Animated, StyleSheet, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { useContext } from 'react';
 import { ThemeContext } from '../../../context/ThemeContext';
 
 interface ToggleSwitchProps {
