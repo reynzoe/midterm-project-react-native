@@ -171,14 +171,17 @@ export default function JobFinderScreen({ navigation }: any) {
                                     <Text style={styles.heroSubtitle}>Clean, modern picks refreshed hourly.</Text>
                                 </View>
                                 <View style={styles.searchRow}>
-                                    <View style={[styles.searchField, { shadowColor: colors.shadow }]}>
+                                    <View style={[
+                                        styles.searchField,
+                                        { shadowColor: colors.shadow, backgroundColor: colors.card, borderColor: colors.border },
+                                    ]}>
                                         <Ionicons name="search" size={18} color={colors.primary} />
                                         <TextInput
                                             value={search}
                                             onChangeText={setSearch}
                                             placeholder="Job title, keywords..."
                                             placeholderTextColor="#94A3B8"
-                                            style={styles.searchInput}
+                                            style={[styles.searchInput, { color: colors.text }]}
                                             returnKeyType="search"
                                             onSubmitEditing={handleSearchSubmit}
                                         />
@@ -317,6 +320,9 @@ export default function JobFinderScreen({ navigation }: any) {
                     <JobCard
                         job={item}
                         onApply={() => navigation.navigate('Apply', { job: item })}
+                        showQuickApply={false}
+                        showMeta
+                        showDescription
                         onPress={() => navigation.navigate('JobDetail', { job: item })}
                     />
                 )}

@@ -1,22 +1,41 @@
 import React, { useContext } from 'react';
-import { View, Text, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, FlatList, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import Header from '../components/Header';
 import JobCard from '../components/JobCard';
 import { JobsContext } from '../context/JobsContext';
 import { ThemeContext } from '../context/ThemeContext';
 
 export default function SavedJobsScreen({ navigation }: any) {
-    const { savedJobs } = useContext(JobsContext);
+    const { savedJobs, removeJob } = useContext(JobsContext);
     const { colors } = useContext(ThemeContext);
 
+    const goToFinder = () => {
+        if (navigation.canGoBack()) {
+            navigation.goBack();
+        } else {
+            navigation.reset({
+                index: 0,
+                routes: [{ name: 'JobFinder' }],
+            });
+        }
+    };
+
+    const confirmRemoveOne = (id: string, title: string) => {
+        Alert.alert(
+            'Remove job?',
+            `"${title}" will be removed from saved.`,
+            [
+                { text: 'Cancel', style: 'cancel' },
+                { text: 'Remove', style: 'destructive', onPress: () => removeJob(id) },
+            ],
+        );
+    };
+
     return (
-        <View style={[styles.container, { backgroundColor: colors.background }]}>
+        <View style={[styles.container, { backgroundColor: colors.background }]}> 
             <Header
                 showHome
-                onHomePress={() => navigation.reset({
-                    index: 0,
-                    routes: [{ name: 'JobFinder' }],
-                })}
+                onHomePress={goToFinder}
             />
             <FlatList
                 data={savedJobs}
@@ -25,17 +44,14 @@ export default function SavedJobsScreen({ navigation }: any) {
                 ListHeaderComponent={
                     <View>
                         <TouchableOpacity
-                            onPress={() => navigation.reset({
-                                index: 0,
-                                routes: [{ name: 'JobFinder' }],
-                            })}
+                            onPress={goToFinder}
                             style={[styles.backBtn, { borderColor: colors.border }]}
                         >
                             <Text style={{ fontSize: 18, color: colors.text }}>‹</Text>
                             <Text style={[styles.backText, { color: colors.primary }]}>Back to search</Text>
                         </TouchableOpacity>
 
-                        <View style={[styles.pageTitleRow, { borderBottomColor: colors.border }]}>
+                        <View style={[styles.pageTitleRow, { borderBottomColor: colors.border }]}> 
                             <View style={[styles.emojiCircle, { backgroundColor: colors.primaryMuted }]}>
                                 <Text style={{ fontSize: 18 }}>🔖</Text>
                             </View>
@@ -48,13 +64,22 @@ export default function SavedJobsScreen({ navigation }: any) {
                         </View>
                     </View>
                 }
-                ItemSeparatorComponent={() => <View style={{ height: 4 }} />}
+                ItemSeparatorComponent={() => <View style={{ height: 4 }} />} 
                 renderItem={({ item }) => (
-                    <JobCard
-                        job={item}
-                        onApply={() => navigation.navigate('Apply', { job: item, fromSaved: true })}
-                        onPress={() => navigation.navigate('JobDetail', { job: item })}
-                    />
+                    <View style={[styles.cardWrapper, { borderColor: 'transparent' }]}> 
+                        <JobCard
+                            job={item}
+                            onApply={() => navigation.navigate('JobDetail', { job: item })}
+                            onPress={() => navigation.navigate('JobDetail', { job: item })}
+                            variant="saved"
+                            hideSaveToggle
+                            showQuickApply={false}
+                            showMeta={false}
+                            showDescription={false}
+                            showRemoveAction
+                            onRemove={() => confirmRemoveOne(item.id, item.title)}
+                        />
+                    </View>
                 )}
                 ListEmptyComponent={
                     <View style={styles.empty}>
@@ -64,10 +89,7 @@ export default function SavedJobsScreen({ navigation }: any) {
                             Tap the bookmark on a job card to keep it here for later.
                         </Text>
                         <TouchableOpacity
-                            onPress={() => navigation.reset({
-                                index: 0,
-                                routes: [{ name: 'JobFinder' }],
-                            })}
+                            onPress={goToFinder}
                             style={[styles.browseBtn, { backgroundColor: colors.primary }]}
                         >
                             <Text style={styles.browseBtnText}>Browse jobs</Text>
@@ -82,6 +104,12 @@ export default function SavedJobsScreen({ navigation }: any) {
 const styles = StyleSheet.create({
     container: { flex: 1 },
     list: { paddingHorizontal: 14, paddingBottom: 40 },
+    cardWrapper: {
+        borderWidth: 2,
+        borderRadius: 16,
+        padding: 4,
+        marginBottom: 6,
+    },
     backBtn: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -144,3 +172,5 @@ const styles = StyleSheet.create({
         fontSize: 14,
     },
 });
+
+// styles are exported only via default component above

@@ -10,9 +10,27 @@ interface JobCardProps {
     job: Job;
     onApply: () => void;
     onPress?: () => void;
+    variant?: 'feed' | 'saved';
+    hideSaveToggle?: boolean;
+    showQuickApply?: boolean;
+    showMeta?: boolean;
+    showDescription?: boolean;
+    showRemoveAction?: boolean;
+    onRemove?: () => void;
 }
 
-export default function JobCard({ job, onApply, onPress }: JobCardProps) {
+export default function JobCard({
+    job,
+    onApply,
+    onPress,
+    variant = 'feed',
+    hideSaveToggle = false,
+    showQuickApply = false,
+    showMeta = true,
+    showDescription = true,
+    showRemoveAction = false,
+    onRemove,
+}: JobCardProps) {
     const { saveJob, removeJob, savedJobs } = useContext(JobsContext);
     const { colors } = useContext(ThemeContext);
 
@@ -26,10 +44,12 @@ export default function JobCard({ job, onApply, onPress }: JobCardProps) {
     };
 
     const initials = useMemo(() => {
-        const first = job.company?.[0] ?? '';
-        const second = job.title?.[0] ?? '';
-        return (first + second).toUpperCase();
-    }, [job.company, job.title]);
+        const trimmed = (job.company ?? '').trim();
+        if (!trimmed) return '?';
+        // Use first two letters of company name for a clearer badge
+        const firstTwo = trimmed.slice(0, 2);
+        return firstTwo.toUpperCase();
+    }, [job.company]);
 
     return (
         <TouchableOpacity
@@ -51,48 +71,74 @@ export default function JobCard({ job, onApply, onPress }: JobCardProps) {
                         <Feather name="briefcase" size={14} color={colors.subtext} />
                         <Text style={[styles.company, { color: colors.subtext }]} numberOfLines={1}>{job.company}</Text>
                     </View>
-                    <View style={styles.metaRow}>
-                        {job.salary ? (
-                            <View style={styles.metaChip}>
-                                <Feather name="dollar-sign" size={13} color="#16A34A" />
-                                <Text style={[styles.metaText, { color: '#16A34A' }]} numberOfLines={1}>{job.salary}</Text>
-                            </View>
-                        ) : null}
-                        {job.location ? (
-                            <View style={styles.metaChip}>
-                                <Feather name="map-pin" size={13} color={colors.subtext} />
-                                <Text style={[styles.metaText, { color: colors.subtext }]} numberOfLines={1}>{job.location}</Text>
-                            </View>
-                        ) : null}
-                    </View>
+                    {showMeta && (
+                        <View style={styles.metaRow}>
+                            {job.salary ? (
+                                <View style={styles.metaChip}>
+                                    <Feather name="dollar-sign" size={13} color="#16A34A" />
+                                    <Text style={[styles.metaText, { color: '#16A34A' }]} numberOfLines={1}>{job.salary}</Text>
+                                </View>
+                            ) : null}
+                            {job.location ? (
+                                <View style={styles.metaChip}>
+                                    <Feather name="map-pin" size={13} color={colors.subtext} />
+                                    <Text style={[styles.metaText, { color: colors.subtext }]} numberOfLines={1}>{job.location}</Text>
+                                </View>
+                            ) : null}
+                        </View>
+                    )}
                 </View>
-                <TouchableOpacity onPress={handleSaveToggle} style={styles.saveIconBtn} activeOpacity={0.85}>
-                    <Ionicons
-                        name={isSaved ? 'heart' : 'heart-outline'}
-                        size={20}
-                        color={isSaved ? colors.primary : colors.subtext}
-                    />
-                </TouchableOpacity>
+                {!hideSaveToggle && (
+                    <TouchableOpacity onPress={handleSaveToggle} style={styles.saveIconBtn} activeOpacity={0.85}>
+                        <Ionicons
+                            name={isSaved ? 'heart' : 'heart-outline'}
+                            size={20}
+                            color={isSaved ? colors.primary : colors.subtext}
+                        />
+                    </TouchableOpacity>
+                )}
             </View>
 
-            {job.description ? (
+            {showDescription && job.description ? (
                 <Text style={[styles.description, { color: colors.subtext }]} numberOfLines={2}>
                     {job.description}
                 </Text>
             ) : null}
 
             <View style={styles.actionsRow}>
-                <TouchableOpacity
-                    style={[styles.quickApplyBtn, { backgroundColor: colors.primary }]}
-                    onPress={onApply}
-                    activeOpacity={0.9}
-                >
-                    <Text style={styles.quickApplyText}>Quick Apply</Text>
-                </TouchableOpacity>
+                {showQuickApply && (
+                    <TouchableOpacity
+                        style={[styles.quickApplyBtn, { backgroundColor: colors.primary }]}
+                        onPress={onApply}
+                        activeOpacity={0.9}
+                    >
+                        <Text style={styles.quickApplyText}>Quick Apply</Text>
+                    </TouchableOpacity>
+                )}
                 {onPress ? (
-                    <TouchableOpacity style={styles.learnMoreBtn} onPress={onPress} activeOpacity={0.85}>
+                    <TouchableOpacity
+                        style={[
+                            styles.learnMoreBtn,
+                            { borderColor: colors.border, backgroundColor: colors.card },
+                        ]}
+                        onPress={onPress}
+                        activeOpacity={0.85}
+                    >
                         <Text style={[styles.learnMoreText, { color: colors.primary }]}>Learn more</Text>
                         <Feather name="arrow-right" size={14} color={colors.primary} />
+                    </TouchableOpacity>
+                ) : null}
+                {showRemoveAction && onRemove ? (
+                    <TouchableOpacity
+                        style={[
+                            styles.removeInlineBtn,
+                            { borderColor: colors.primary, backgroundColor: colors.primaryMuted },
+                        ]}
+                        onPress={onRemove}
+                        activeOpacity={0.85}
+                    >
+                        <Feather name="trash-2" size={14} color={colors.primary} />
+                        <Text style={[styles.learnMoreText, { color: colors.primary }]}>Remove</Text>
                     </TouchableOpacity>
                 ) : null}
             </View>

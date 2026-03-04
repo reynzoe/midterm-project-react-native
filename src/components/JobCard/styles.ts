@@ -82,18 +82,15 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         gap: 6,
     },
-    learnMoreText: {
-        fontSize: 13,
-        fontWeight: '700',
-    },
     actionsRow: {
         flexDirection: 'row',
-        gap: 10,
+        gap: 12,
         marginTop: 12,
         alignItems: 'center',
+        justifyContent: 'space-between',
     },
     quickApplyBtn: {
-        flex: 0.55,
+        flex: 1,
         height: 42,
         borderRadius: 12,
         alignItems: 'center',
@@ -114,12 +111,23 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: '#FFE2C2',
         backgroundColor: '#FFFCF6',
-        flex: 0.45,
+        flex: 1,
         justifyContent: 'center',
     },
     learnMoreText: {
         fontSize: 13,
         fontWeight: '700',
+    },
+    removeInlineBtn: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 6,
+        paddingHorizontal: 12,
+        height: 42,
+        borderRadius: 10,
+        borderWidth: 1,
+        flex: 1,
+        justifyContent: 'center',
     },
 });
 
