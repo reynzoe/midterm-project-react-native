@@ -29,7 +29,7 @@ export default function ApplicationFormScreen({ route, navigation }: any) {
     const submit = () => {
         if (!isNotEmpty(name)) return Alert.alert('Validation Error', 'Name is required.');
         if (!isEmailValid(email)) return Alert.alert('Validation Error', 'Please enter a valid email.');
-        if (!isPhoneValid(phone)) return Alert.alert('Validation Error', 'Please enter a valid 11 digit phone number (Ex: 0912345678.');
+        if (!isPhoneValid(phone)) return Alert.alert('Validation Error', 'Please enter a valid 11-digit phone number (e.g. 09123456789).');
         if (!isNotEmpty(why)) return Alert.alert('Validation Error', 'Please tell us why we should hire you.');
 
         Alert.alert('Application Submitted!', 'We received your application.', [
