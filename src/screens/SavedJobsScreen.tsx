@@ -1,5 +1,5 @@
-import React, { useContext } from 'react';
-import { View, Text, FlatList, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import React, { useContext, useRef } from 'react';
+import { View, Text, FlatList, StyleSheet, TouchableOpacity, Alert, Animated, Easing } from 'react-native';
 import Header from '../components/Header';
 import JobCard from '../components/JobCard';
 import { JobsContext } from '../context/JobsContext';
@@ -9,9 +9,20 @@ export default function SavedJobsScreen({ navigation }: any) {
     const { savedJobs, removeJob } = useContext(JobsContext);
     const { colors } = useContext(ThemeContext);
     const [tabVisible, setTabVisible] = React.useState(false);
+    const exitAnim = useRef(new Animated.Value(0)).current;
+    const backScale = useRef(new Animated.Value(1)).current;
+    const homeScale = useRef(new Animated.Value(1)).current;
 
     const goToFinder = () => {
-        navigation.navigate('Main', { screen: 'JobFinderTab' });
+        Animated.timing(exitAnim, {
+            toValue: 1,
+            duration: 180,
+            easing: Easing.out(Easing.quad),
+            useNativeDriver: true,
+        }).start(() => {
+            exitAnim.setValue(0);
+            navigation.navigate('Main', { screen: 'JobFinderTab' });
+        });
     };
 
     const confirmRemoveOne = (id: string, title: string) => {
@@ -26,15 +37,37 @@ export default function SavedJobsScreen({ navigation }: any) {
     };
 
     return (
-        <View style={[styles.container, { backgroundColor: colors.background }]}> 
+        <Animated.View
+            style={[
+                styles.container,
+                { backgroundColor: colors.background },
+                {
+                    transform: [{
+                        translateX: exitAnim.interpolate({
+                            inputRange: [0, 1],
+                            outputRange: [0, -28],
+                        }),
+                    }],
+                    opacity: exitAnim.interpolate({
+                        inputRange: [0, 1],
+                        outputRange: [1, 0.75],
+                    }),
+                },
+            ]}
+        >
             <Header
                 showHome
-                onHomePress={goToFinder}
+                onHomePress={() => {
+                    Animated.spring(homeScale, { toValue: 0.9, useNativeDriver: true, friction: 6, tension: 140 }).start(() => {
+                        Animated.spring(homeScale, { toValue: 1, useNativeDriver: true, friction: 6, tension: 140 }).start();
+                        goToFinder();
+                    });
+                }}
             />
             <FlatList
                 data={savedJobs}
                 keyExtractor={item => item.id}
-                contentContainerStyle={styles.list}
+                contentContainerStyle={[styles.list, { paddingBottom: 140 }]}
                 onScroll={e => {
                     const offsetY = e.nativeEvent.contentOffset.y;
                     const next = offsetY > 60;
@@ -49,9 +82,16 @@ export default function SavedJobsScreen({ navigation }: any) {
                         <TouchableOpacity
                             onPress={goToFinder}
                             style={[styles.backBtn, { borderColor: colors.border }]}
+                            activeOpacity={0.85}
+                            onPressIn={() => Animated.spring(backScale, { toValue: 0.9, useNativeDriver: true }).start()}
+                            onPressOut={() => Animated.spring(backScale, { toValue: 1, useNativeDriver: true }).start()}
                         >
-                            <Text style={{ fontSize: 18, color: colors.text }}>‹</Text>
-                            <Text style={[styles.backText, { color: colors.primary }]}>Back to search</Text>
+                            <Animated.View style={{ transform: [{ scale: backScale }] }}>
+                                <Text style={{ fontSize: 18, color: colors.text }}>‹</Text>
+                            </Animated.View>
+                            <Animated.View style={{ transform: [{ scale: backScale }] }}>
+                                <Text style={[styles.backText, { color: colors.primary }]}>Back to search</Text>
+                            </Animated.View>
                         </TouchableOpacity>
 
                         <View style={[styles.pageTitleRow, { borderBottomColor: colors.border }]}> 
@@ -100,7 +140,7 @@ export default function SavedJobsScreen({ navigation }: any) {
                     </View>
                 }
             />
-        </View>
+        </Animated.View>
     );
 }
 

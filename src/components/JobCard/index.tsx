@@ -1,5 +1,5 @@
-import React, { useContext, useMemo } from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import React, { useContext, useMemo, useRef } from 'react';
+import { View, Text, TouchableOpacity, Animated, Easing } from 'react-native';
 import { Ionicons, Feather } from '@expo/vector-icons';
 import { JobsContext } from '../../context/JobsContext';
 import { ThemeContext } from '../../context/ThemeContext';
@@ -35,11 +35,27 @@ export default function JobCard({
     const { colors } = useContext(ThemeContext);
 
     const isSaved = savedJobs.find(j => j.id === job.id);
+    const pulse = useRef(new Animated.Value(1)).current;
+
     const handleSaveToggle = () => {
         if (isSaved) {
             removeJob(job.id);
         } else {
             saveJob(job);
+            Animated.sequence([
+                Animated.timing(pulse, {
+                    toValue: 1.3,
+                    duration: 140,
+                    easing: Easing.out(Easing.quad),
+                    useNativeDriver: true,
+                }),
+                Animated.spring(pulse, {
+                    toValue: 1,
+                    friction: 6,
+                    tension: 140,
+                    useNativeDriver: true,
+                }),
+            ]).start();
         }
     };
 
@@ -90,11 +106,13 @@ export default function JobCard({
                 </View>
                 {!hideSaveToggle && (
                     <TouchableOpacity onPress={handleSaveToggle} style={styles.saveIconBtn} activeOpacity={0.85}>
-                        <Ionicons
-                            name={isSaved ? 'heart' : 'heart-outline'}
-                            size={20}
-                            color={isSaved ? colors.primary : colors.subtext}
-                        />
+                        <Animated.View style={{ transform: [{ scale: pulse }] }}>
+                            <Ionicons
+                                name={isSaved ? 'heart' : 'heart-outline'}
+                                size={20}
+                                color={isSaved ? colors.primary : colors.subtext}
+                            />
+                        </Animated.View>
                     </TouchableOpacity>
                 )}
             </View>

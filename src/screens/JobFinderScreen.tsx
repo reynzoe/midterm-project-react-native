@@ -22,6 +22,7 @@ export default function JobFinderScreen({ navigation, route }: any) {
     const listRef = useRef<FlatList<Job>>(null);
     const searchInputRef = useRef<TextInput>(null);
     const [tabVisible, setTabVisible] = useState(false);
+    const savedBtnScale = useRef(new Animated.Value(1)).current;
     const { colors, isDark, toggleTheme } = useContext(ThemeContext);
 
     useEffect(() => {
@@ -181,10 +182,14 @@ export default function JobFinderScreen({ navigation, route }: any) {
                                         <ToggleSwitch value={isDark} onValueChange={toggleTheme} />
                                         <TouchableOpacity
                                             style={styles.heroIconBtn}
+                                            onPressIn={() => Animated.spring(savedBtnScale, { toValue: 0.9, useNativeDriver: true }).start()}
+                                            onPressOut={() => Animated.spring(savedBtnScale, { toValue: 1, useNativeDriver: true }).start()}
                                             onPress={() => navigation.navigate('Main', { screen: 'SavedTab' })}
                                             activeOpacity={0.85}
                                         >
-                                            <Feather name="bookmark" size={18} color="#FFFFFF" />
+                                            <Animated.View style={{ transform: [{ scale: savedBtnScale }] }}>
+                                                <Feather name="bookmark" size={18} color="#FFFFFF" />
+                                            </Animated.View>
                                         </TouchableOpacity>
                                     </View>
                                 </View>
@@ -201,57 +206,56 @@ export default function JobFinderScreen({ navigation, route }: any) {
                                             ref={searchInputRef}
                                             value={search}
                                             onChangeText={setSearch}
-                                            placeholder="Job title, keywords..."
-                                            placeholderTextColor="#94A3B8"
+                                            placeholder="Search company, title, keywords…"
+                                            placeholderTextColor={isDark ? '#93A7C4' : '#6B7280'}
                                             style={[styles.searchInput, { color: colors.text }]}
                                             returnKeyType="search"
                                             onSubmitEditing={handleSearchSubmit}
                                         />
                                     </View>
                                 </View>
-                            </View>
-                        </View>
 
-                        <View style={styles.section}>
-                            <View style={styles.sectionHeaderRow}>
-                                <Text style={[styles.sectionTitle, { color: colors.text }]}>Recent searches</Text>
-                                <TouchableOpacity onPress={() => setRecentSearches([])} disabled={!recentSearches.length}>
-                                    <Text style={[
-                                        styles.sectionLink,
-                                        { color: recentSearches.length ? colors.primary : colors.subtext }
-                                    ]}>
-                                        Clear
+                                <View style={{ marginTop: 16 }}>
+                                    <Text style={{ color: 'rgba(255,255,255,0.86)', fontWeight: '700', fontSize: 13, marginBottom: 8 }}>
+                                        Recent searches
                                     </Text>
-                                </TouchableOpacity>
-                            </View>
-                            {recentSearches.length ? (
-                                <FlatList
-                                    data={recentSearches}
-                                    keyExtractor={(item, index) => `${item.query}-${index}`}
-                                    horizontal
-                                    showsHorizontalScrollIndicator={false}
-                                    ItemSeparatorComponent={() => <View style={{ width: 12 }} />}
-                                    contentContainerStyle={{ paddingHorizontal: 16, paddingVertical: 8 }}
-                                    renderItem={({ item }) => (
-                                        <TouchableOpacity
-                                            onPress={() => {
-                                                setSearch(item.query);
-                                                recordSearch(item.query);
-                                            }}
-                                            style={[styles.recentCard, { backgroundColor: colors.card, borderColor: colors.border }]}
-                                            activeOpacity={0.85}
-                                        >
-                                            <Text style={[styles.recentTitle, { color: colors.text }]} numberOfLines={1}>
-                                                {item.query}
-                                            </Text>
-                                        </TouchableOpacity>
+                                    {recentSearches.length ? (
+                                        <FlatList
+                                            data={recentSearches}
+                                            keyExtractor={(item, index) => `${item.query}-${index}`}
+                                            horizontal
+                                            showsHorizontalScrollIndicator={false}
+                                            ItemSeparatorComponent={() => <View style={{ width: 10 }} />}
+                                            contentContainerStyle={{ paddingVertical: 2 }}
+                                            renderItem={({ item }) => (
+                                                <TouchableOpacity
+                                                    onPress={() => {
+                                                        setSearch(item.query);
+                                                        recordSearch(item.query);
+                                                    }}
+                                                    style={{
+                                                        paddingHorizontal: 12,
+                                                        paddingVertical: 8,
+                                                        borderRadius: 12,
+                                                        borderWidth: 1,
+                                                        borderColor: 'rgba(255,255,255,0.25)',
+                                                        backgroundColor: 'rgba(255,255,255,0.12)',
+                                                    }}
+                                                    activeOpacity= {0.85}
+                                                >
+                                                    <Text style={{ color: '#FFFFFF', fontWeight: '700', fontSize: 13 }} numberOfLines={1}>
+                                                        {item.query}
+                                                    </Text>
+                                                </TouchableOpacity>
+                                            )}
+                                        />
+                                    ) : (
+                                        <Text style={{ color: 'rgba(255,255,255,0.75)', fontSize: 12 }}>
+                                            Search to start building recents.
+                                        </Text>
                                     )}
-                                />
-                            ) : (
-                                <View style={{ paddingHorizontal: 16, paddingVertical: 10 }}>
-                                    <Text style={{ color: colors.subtext, fontSize: 13 }}>Search to start building recents.</Text>
                                 </View>
-                            )}
+                            </View>
                         </View>
 
                         <View style={[styles.sectionHeaderRow, { paddingHorizontal: 16, marginTop: 4, marginBottom: 10 }]}>

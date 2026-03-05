@@ -42,7 +42,10 @@ function MainTabs() {
 
 export default function AppNavigator() {
     return (
-        <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName="Start">
+        <Stack.Navigator
+            screenOptions={{ headerShown: false, animation: 'slide_from_right' }}
+            initialRouteName="Start"
+        >
             <Stack.Screen name="Start" component={StartScreen} />
             <Stack.Screen name="Main" component={MainTabs} />
             <Stack.Screen name="JobFinder" component={JobFinderScreen} />

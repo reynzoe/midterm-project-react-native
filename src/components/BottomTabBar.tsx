@@ -9,6 +9,7 @@ export default function BottomTabBar({ state, navigation }: BottomTabBarProps) {
     const [barWidth, setBarWidth] = useState(0);
     const pillX = useRef(new Animated.Value(0)).current;
     const dragX = useRef(new Animated.Value(0)).current;
+    const pressScale = useRef(new Animated.Value(1)).current;
     const panResponder = useRef(
         PanResponder.create({
             onStartShouldSetPanResponder: () => true,
@@ -46,18 +47,20 @@ export default function BottomTabBar({ state, navigation }: BottomTabBarProps) {
                 style={[
                     styles.container,
                     {
-                        backgroundColor: isDark ? 'rgba(12,18,28,0.85)' : 'rgba(255,255,255,0.78)',
-                        borderTopColor: colors.border,
+                        backgroundColor: isDark ? 'rgba(12,18,28,0.6)' : 'rgba(255,255,255,0.55)',
                         shadowColor: colors.shadow,
+                        borderColor: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(15,23,42,0.06)',
                     },
                 ]}
             >
+                <View style={styles.gloss} />
                 <Animated.View
                     style={[
                         styles.pill,
                         {
                             transform: [{ translateX: pillX }],
-                            backgroundColor: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(255,255,255,0.5)',
+                            backgroundColor: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(255,255,255,0.35)',
+                            borderColor: isDark ? 'rgba(255,255,255,0.12)' : 'rgba(255,255,255,0.22)',
                         },
                     ]}
                 />
@@ -70,23 +73,25 @@ export default function BottomTabBar({ state, navigation }: BottomTabBarProps) {
                     colors={colors}
                 />
 
-                <TouchableOpacity
-                    activeOpacity={0.9}
-                    onPress={() => goTo('JobFinderTab', { triggerSearch: true })}
-                    style={[
-                        styles.searchBtn,
-                        {
-                            backgroundColor: colors.primary,
-                            shadowColor: colors.shadow,
-                            borderColor: colors.border,
-                        },
-                    ]}
-                    {...panResponder.panHandlers}
-                >
-                    <Animated.View style={{ transform: [{ translateX: dragX }] }}>
-                        <Feather name="search" size={20} color={isDark ? '#0B1624' : '#FFFFFF'} />
-                    </Animated.View>
-                </TouchableOpacity>
+            <TouchableOpacity
+                activeOpacity={0.9}
+                onPress={() => goTo('JobFinderTab', { triggerSearch: true })}
+                onPressIn={() => Animated.spring(pressScale, { toValue: 0.9, useNativeDriver: true }).start()}
+                onPressOut={() => Animated.spring(pressScale, { toValue: 1, useNativeDriver: true, friction: 4 }).start()}
+                style={[
+                    styles.searchBtn,
+                    {
+                        backgroundColor: colors.primary,
+                        shadowColor: colors.shadow,
+                        borderColor: colors.border,
+                    },
+                ]}
+                {...panResponder.panHandlers}
+            >
+                <Animated.View style={{ transform: [{ translateX: dragX }, { scale: pressScale }] }}>
+                    <Feather name="search" size={20} color={isDark ? '#0B1624' : '#FFFFFF'} />
+                </Animated.View>
+            </TouchableOpacity>
 
                 <TabButton
                     label="Browse"
@@ -123,7 +128,8 @@ const styles = StyleSheet.create({
         position: 'absolute',
         left: 0,
         right: 0,
-        bottom: 0,
+        bottom: 10,
+        alignItems: 'center',
     },
     container: {
         flexDirection: 'row',
@@ -132,12 +138,23 @@ const styles = StyleSheet.create({
         paddingHorizontal: 16,
         paddingTop: 8,
         paddingBottom: Platform.select({ ios: 14, android: 12, default: 12 }),
-        borderTopWidth: 1,
         shadowOpacity: 0.08,
         shadowOffset: { width: 0, height: -6 },
         shadowRadius: 12,
         elevation: 12,
         overflow: 'hidden',
+        borderRadius: 32,
+        width: '92%',
+        borderWidth: 1,
+    },
+    gloss: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        height: 1,
+        backgroundColor: 'rgba(255,255,255,0.28)',
+        zIndex: 2,
     },
     pill: {
         position: 'absolute',
@@ -146,6 +163,7 @@ const styles = StyleSheet.create({
         width: 96,
         borderRadius: 18,
         zIndex: 0,
+        borderWidth: 1,
     },
     tabBtn: {
         flex: 1,
@@ -158,9 +176,9 @@ const styles = StyleSheet.create({
         fontWeight: '700',
     },
     searchBtn: {
-        width: 50,
-        height: 50,
-        borderRadius: 25,
+        width: 54,
+        height: 54,
+        borderRadius: 27,
         alignItems: 'center',
         justifyContent: 'center',
         marginHorizontal: 10,
