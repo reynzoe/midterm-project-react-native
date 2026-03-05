@@ -11,7 +11,7 @@ import styles from './JobFinderScreen.styles';
 type RecentSearch = { query: string };
 type SortBy = 'none' | 'company' | 'title';
 
-export default function JobFinderScreen({ navigation }: any) {
+export default function JobFinderScreen({ navigation, route }: any) {
     const [jobs, setJobs] = useState<Job[]>([]);
     const [search, setSearch] = useState('');
     const [recentSearches, setRecentSearches] = useState<RecentSearch[]>([]);
@@ -19,11 +19,18 @@ export default function JobFinderScreen({ navigation }: any) {
     const [sortBy, setSortBy] = useState<SortBy>('none');
     const [showFilters, setShowFilters] = useState(false);
     const filterAnim = useRef(new Animated.Value(0)).current;
+    const listRef = useRef<FlatList<Job>>(null);
+    const searchInputRef = useRef<TextInput>(null);
+    const [tabVisible, setTabVisible] = useState(false);
     const { colors, isDark, toggleTheme } = useContext(ThemeContext);
 
     useEffect(() => {
         fetchJobs().then(setJobs);
     }, []);
+
+    useEffect(() => {
+        navigation.setParams({ showTabBar: tabVisible });
+    }, [tabVisible, navigation]);
 
     const seniorWords = useMemo(() => ['senior', 'sr', 'lead', 'principal', 'staff', 'manager'], []);
     const juniorWords = useMemo(() => ['junior', 'jr', 'entry', 'associate', 'assistant'], []);
@@ -133,17 +140,31 @@ export default function JobFinderScreen({ navigation }: any) {
         }).start();
     }, [showFilters, filterAnim]);
 
-    const heroBg = isDark ? '#000000' : '#FF6B6B';
-    const facetA = isDark ? '#111111' : '#FFB100';
-    const facetB = isDark ? '#161616' : '#FF8C6A';
-    const facetC = isDark ? '#1C1C1C' : '#FF7F50';
+    useEffect(() => {
+        if (route?.params?.triggerSearch) {
+            listRef.current?.scrollToOffset({ offset: 0, animated: true });
+            searchInputRef.current?.focus();
+            navigation.setParams({ triggerSearch: false });
+        }
+    }, [route?.params?.triggerSearch, navigation]);
+
+    const heroBg = isDark ? '#0B1624' : '#1DA1F2';
+    const facetA = isDark ? '#0F263A' : '#8CD6FF';
+    const facetB = isDark ? '#0C2031' : '#5CB8F5';
+    const facetC = isDark ? '#0E2D47' : '#3AA6EC';
 
     return (
         <View style={[styles.container, { backgroundColor: colors.background }]}>
             <FlatList
+                ref={listRef}
                 data={sorted}
                 keyExtractor={(item) => item.id}
                 contentContainerStyle={{ paddingBottom: 28 }}
+                onScroll={e => {
+                    const offsetY = e.nativeEvent.contentOffset.y;
+                    setTabVisible(offsetY > 60);
+                }}
+                scrollEventThrottle={16}
                 ListHeaderComponent={
                     <View>
                         <View style={[styles.hero, { backgroundColor: heroBg }]}>
@@ -160,7 +181,7 @@ export default function JobFinderScreen({ navigation }: any) {
                                         <ToggleSwitch value={isDark} onValueChange={toggleTheme} />
                                         <TouchableOpacity
                                             style={styles.heroIconBtn}
-                                            onPress={() => navigation.navigate('SavedJobs')}
+                                            onPress={() => navigation.navigate('Main', { screen: 'SavedTab' })}
                                             activeOpacity={0.85}
                                         >
                                             <Feather name="bookmark" size={18} color="#FFFFFF" />
@@ -177,6 +198,7 @@ export default function JobFinderScreen({ navigation }: any) {
                                     ]}>
                                         <Ionicons name="search" size={18} color={colors.primary} />
                                         <TextInput
+                                            ref={searchInputRef}
                                             value={search}
                                             onChangeText={setSearch}
                                             placeholder="Job title, keywords..."

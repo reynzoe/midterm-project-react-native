@@ -6,20 +6,20 @@ import styles from './StartScreen.styles';
 
 export default function StartScreen({ navigation }: any) {
     const palette = useMemo(() => ({
-        coral: '#FF6B6B',
-        coralDeep: '#FF5A5A',
-        coralSoft: '#FF8C6A',
-        gold: '#FFB100',
+        primary: '#1DA1F2',
+        primaryDeep: '#0A8DDC',
+        primarySoft: '#5CB8FF',
+        accent: '#8CD6FF',
     }), []);
 
     return (
-        <View style={[styles.container, { backgroundColor: palette.coral }]}>
+        <View style={[styles.container, { backgroundColor: palette.primary }]}>
             <StatusBar style="light" />
 
-            <View style={[styles.facetOne, { backgroundColor: palette.coralSoft }]} />
-            <View style={[styles.facetTwo, { backgroundColor: palette.gold }]} />
-            <View style={[styles.facetThree, { backgroundColor: palette.coralDeep }]} />
-            <View style={[styles.wave, { backgroundColor: palette.coralSoft }]} />
+            <View style={[styles.facetOne, { backgroundColor: palette.accent }]} />
+            <View style={[styles.facetTwo, { backgroundColor: palette.primarySoft }]} />
+            <View style={[styles.facetThree, { backgroundColor: palette.primaryDeep }]} />
+            <View style={[styles.wave, { backgroundColor: palette.primarySoft }]} />
 
             <View style={styles.content}>
                 <Text style={styles.brand}>Aspire</Text>
@@ -30,10 +30,10 @@ export default function StartScreen({ navigation }: any) {
             <TouchableOpacity
                 style={styles.beginBtn}
                 activeOpacity={0.9}
-                onPress={() => navigation.replace('JobFinder')}
+                onPress={() => navigation.replace('Main', { screen: 'JobFinderTab' })}
             >
-                <Text style={[styles.beginText, { color: palette.coral }]}>Begin</Text>
-                <Feather name="arrow-right" size={18} color={palette.coral} />
+                <Text style={[styles.beginText, { color: palette.primaryDeep }]}>Begin</Text>
+                <Feather name="arrow-right" size={18} color={palette.primaryDeep} />
             </TouchableOpacity>
         </View>
     );

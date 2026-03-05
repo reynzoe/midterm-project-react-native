@@ -1,5 +1,5 @@
 import React, { useEffect, useRef , useContext } from 'react';
-import { TouchableOpacity, Animated, StyleSheet, View } from 'react-native';
+import { TouchableOpacity, Animated, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { ThemeContext } from '../../../context/ThemeContext';
 
@@ -28,13 +28,13 @@ export default function ToggleSwitch({ value, onValueChange }: ToggleSwitchProps
     const bgInterpolate = anim.interpolate({
         inputRange: [0, 1],
         outputRange: [
-            'rgba(255,107,107,0.9)', // coral for light
-            'rgba(255,140,106,0.9)', // softened coral for dark
+            'rgba(29,161,242,0.55)', // light track
+            'rgba(29,161,242,0.95)', // dark track
         ],
     });
 
     const iconName = value ? 'moon' : 'sunny';
-    const iconColor = value ? '#FFC14D' : '#FF6B6B';
+    const iconColor = value ? '#E3F4FF' : '#0F172A';
 
     return (
         <TouchableOpacity activeOpacity={0.9} onPress={onValueChange}>
@@ -54,6 +54,8 @@ const styles = StyleSheet.create({
         borderRadius: 16,
         padding: 2,
         justifyContent: 'center',
+        borderWidth: 1,
+        borderColor: 'rgba(29,161,242,0.35)',
     },
     knob: {
         width: 28,

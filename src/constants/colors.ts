@@ -1,21 +1,21 @@
 export const lightColors = {
-    background: '#FFF8F0',   // warm glow
+    background: '#F5F9FF',   // soft blue wash
     card: '#FFFFFF',
-    text: '#13213C',         // deep navy for contrast
+    text: '#0F172A',
     subtext: '#4B5568',
-    border: '#FFE2C2',
-    primary: '#FF6B6B',      // coral
-    primaryMuted: '#FFE8DC', // soft coral wash
-    shadow: 'rgba(19, 33, 60, 0.08)',
+    border: '#D6E4FF',
+    primary: '#1DA1F2',      // twitter blue
+    primaryMuted: '#E3F4FF', // pale blue fill
+    shadow: 'rgba(15, 23, 42, 0.08)',
 };
 
 export const darkColors = {
-    background: '#000000',   // pure black for high contrast
-    card: '#0A0A0A',
-    text: '#F9FAFB',
-    subtext: '#C7CDD4',
-    border: '#1A1A1A',
-    primary: '#FF8C6A',      // vibrant coral pops on black
-    primaryMuted: '#33130F', // deep coral shadow
-    shadow: 'rgba(0, 0, 0, 0.60)',
+    background: '#050910',   // deep navy-black
+    card: '#0B1624',
+    text: '#E8F2FF',
+    subtext: '#A5B8D8',
+    border: '#142133',
+    primary: '#1DA1F2',      // keep brand blue
+    primaryMuted: '#0F263A', // muted blue overlay
+    shadow: 'rgba(0, 0, 0, 0.70)',
 };

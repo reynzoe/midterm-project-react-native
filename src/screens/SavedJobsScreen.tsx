@@ -8,16 +8,10 @@ import { ThemeContext } from '../context/ThemeContext';
 export default function SavedJobsScreen({ navigation }: any) {
     const { savedJobs, removeJob } = useContext(JobsContext);
     const { colors } = useContext(ThemeContext);
+    const [tabVisible, setTabVisible] = React.useState(false);
 
     const goToFinder = () => {
-        if (navigation.canGoBack()) {
-            navigation.goBack();
-        } else {
-            navigation.reset({
-                index: 0,
-                routes: [{ name: 'JobFinder' }],
-            });
-        }
+        navigation.navigate('Main', { screen: 'JobFinderTab' });
     };
 
     const confirmRemoveOne = (id: string, title: string) => {
@@ -41,6 +35,15 @@ export default function SavedJobsScreen({ navigation }: any) {
                 data={savedJobs}
                 keyExtractor={item => item.id}
                 contentContainerStyle={styles.list}
+                onScroll={e => {
+                    const offsetY = e.nativeEvent.contentOffset.y;
+                    const next = offsetY > 60;
+                    if (next !== tabVisible) {
+                        setTabVisible(next);
+                        navigation.setParams({ showTabBar: next });
+                    }
+                }}
+                scrollEventThrottle={16}
                 ListHeaderComponent={
                     <View>
                         <TouchableOpacity
