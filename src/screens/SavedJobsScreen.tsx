@@ -1,5 +1,5 @@
 import React, { useContext, useRef } from 'react';
-import { View, Text, FlatList, StyleSheet, TouchableOpacity, Alert, Animated, Easing } from 'react-native';
+import { View, Text, FlatList, StyleSheet, TouchableOpacity, Alert, Animated } from 'react-native';
 import Header from '../components/Header';
 import JobCard from '../components/JobCard';
 import { JobsContext } from '../context/JobsContext';
@@ -9,20 +9,11 @@ export default function SavedJobsScreen({ navigation }: any) {
     const { savedJobs, removeJob } = useContext(JobsContext);
     const { colors } = useContext(ThemeContext);
     const [tabVisible, setTabVisible] = React.useState(false);
-    const exitAnim = useRef(new Animated.Value(0)).current;
     const backScale = useRef(new Animated.Value(1)).current;
     const homeScale = useRef(new Animated.Value(1)).current;
 
     const goToFinder = () => {
-        Animated.timing(exitAnim, {
-            toValue: 1,
-            duration: 180,
-            easing: Easing.out(Easing.quad),
-            useNativeDriver: true,
-        }).start(() => {
-            exitAnim.setValue(0);
-            navigation.navigate('Main', { screen: 'JobFinderTab' });
-        });
+        navigation.navigate('Main', { screen: 'JobFinderTab' });
     };
 
     const confirmRemoveOne = (id: string, title: string) => {
@@ -37,24 +28,7 @@ export default function SavedJobsScreen({ navigation }: any) {
     };
 
     return (
-        <Animated.View
-            style={[
-                styles.container,
-                { backgroundColor: colors.background },
-                {
-                    transform: [{
-                        translateX: exitAnim.interpolate({
-                            inputRange: [0, 1],
-                            outputRange: [0, -28],
-                        }),
-                    }],
-                    opacity: exitAnim.interpolate({
-                        inputRange: [0, 1],
-                        outputRange: [1, 0.75],
-                    }),
-                },
-            ]}
-        >
+        <View style={[styles.container, { backgroundColor: colors.background }]}>
             <Header
                 showHome
                 onHomePress={() => {
@@ -140,7 +114,7 @@ export default function SavedJobsScreen({ navigation }: any) {
                     </View>
                 }
             />
-        </Animated.View>
+        </View>
     );
 }
 
