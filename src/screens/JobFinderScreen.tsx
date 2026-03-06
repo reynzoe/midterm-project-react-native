@@ -6,7 +6,7 @@ import { ThemeContext } from '../context/ThemeContext';
 import JobCard from '../components/JobCard';
 import { Job } from '../types/job';
 import ToggleSwitch from '../components/ui/ToggleSwitch';
-import styles from './JobFinderScreen.styles';
+import styles from '../styles/screens/JobFinderScreenStyles';
 
 type RecentSearch = { query: string };
 type SortBy = 'none' | 'company' | 'title';

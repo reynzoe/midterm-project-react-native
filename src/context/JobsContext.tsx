@@ -10,6 +10,8 @@ interface JobsContextType {
     addApplied: (application: JobApplication) => void;
     isApplied: (id: string) => boolean;
     removeApplied: (id: string) => void;
+    toast: string | null;
+    flash: (msg: string) => void;
 }
 
 export const JobsContext = createContext<JobsContextType>({} as JobsContextType);
@@ -17,6 +19,12 @@ export const JobsContext = createContext<JobsContextType>({} as JobsContextType)
 export const JobsProvider = ({ children }: { children: ReactNode }) => {
     const [savedJobs, setSavedJobs] = useState<Job[]>([]);
     const [appliedJobs, setAppliedJobs] = useState<JobApplication[]>([]);
+    const [toast, setToast] = useState<string | null>(null);
+
+    const flash = (msg: string) => {
+        setToast(msg);
+        setTimeout(() => setToast(null), 1800);
+    };
 
     const saveJob = (job: Job) => {
         const isDuplicate = savedJobs.some(
@@ -36,6 +44,7 @@ export const JobsProvider = ({ children }: { children: ReactNode }) => {
         }
 
         setSavedJobs(prev => [...prev, job]);
+        flash('Job saved!');
     };
 
     const removeJob = (id: string) => {
@@ -57,7 +66,7 @@ export const JobsProvider = ({ children }: { children: ReactNode }) => {
     };
 
     return (
-        <JobsContext.Provider value={{ savedJobs, saveJob, removeJob, appliedJobs, addApplied, isApplied, removeApplied }}>
+        <JobsContext.Provider value={{ savedJobs, saveJob, removeJob, appliedJobs, addApplied, isApplied, removeApplied, toast, flash }}>
             {children}
         </JobsContext.Provider>
     );

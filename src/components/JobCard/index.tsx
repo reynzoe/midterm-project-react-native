@@ -4,7 +4,7 @@ import { Ionicons, Feather } from '@expo/vector-icons';
 import { JobsContext } from '../../context/JobsContext';
 import { ThemeContext } from '../../context/ThemeContext';
 import { Job } from '../../types/job';
-import styles from './styles';
+import styles from '../../styles/components/JobCardStyles';
 
 interface JobCardProps {
     job: Job;

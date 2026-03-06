@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { StatusBar } from 'expo-status-bar';
-import styles from './StartScreen.styles';
+import styles from '../styles/screens/StartScreenStyles';
 
 export default function StartScreen({ navigation }: any) {
     const palette = useMemo(() => ({

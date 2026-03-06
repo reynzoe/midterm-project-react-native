@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { View, Text, FlatList, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, FlatList, StyleSheet, TouchableOpacity, Alert, LayoutAnimation } from 'react-native';
 import Header from '../components/Header';
 import { JobsContext } from '../context/JobsContext';
 import { ThemeContext } from '../context/ThemeContext';
@@ -34,7 +34,10 @@ export default function AppliedJobsScreen({ navigation }: any) {
                     <TouchableOpacity
                         style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border, shadowColor: colors.shadow }]}
                         activeOpacity={0.9}
-                        onPress={() => setExpandedId(expanded ? null : item.job.id)}
+                        onPress={() => {
+                            LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+                            setExpandedId(expanded ? null : item.job.id);
+                        }}
                     >
                         <View style={styles.titleRow}>
                             <Text style={[styles.jobTitle, { color: colors.text }]} numberOfLines={2}>{item.job.title}</Text>
