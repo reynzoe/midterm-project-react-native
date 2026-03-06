@@ -7,9 +7,26 @@ interface InputProps {
     onChangeText: (text: string) => void;
     placeholder?: string;
     multiline?: boolean;
+    keyboardType?: any;
+    autoCapitalize?: 'none' | 'sentences' | 'words' | 'characters';
+    autoCorrect?: boolean;
+    textContentType?: any;
+    maxLength?: number;
+    secureTextEntry?: boolean;
 }
 
-export default function Input({ value, onChangeText, placeholder, multiline }: InputProps) {
+export default function Input({
+    value,
+    onChangeText,
+    placeholder,
+    multiline,
+    keyboardType,
+    autoCapitalize,
+    autoCorrect,
+    textContentType,
+    maxLength,
+    secureTextEntry,
+}: InputProps) {
     const { colors } = useContext(ThemeContext);
 
     return (
@@ -18,6 +35,12 @@ export default function Input({ value, onChangeText, placeholder, multiline }: I
             onChangeText={onChangeText}
             placeholder={placeholder}
             placeholderTextColor={colors.subtext}
+            keyboardType={keyboardType}
+            autoCapitalize={autoCapitalize}
+            autoCorrect={autoCorrect}
+            textContentType={textContentType}
+            maxLength={maxLength}
+            secureTextEntry={secureTextEntry}
             style={[styles.input, {
                 backgroundColor: colors.card,
                 color: colors.text,

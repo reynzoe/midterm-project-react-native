@@ -100,8 +100,9 @@ export default function ApplicationFormScreen({ route, navigation }: any) {
                         <Text style={[styles.label, { color: colors.subtext }]}>Full Name</Text>
                         <Input
                             value={name}
-                            onChangeText={setName}
+                            onChangeText={(val) => setName(val.replace(/[^A-Za-z' .-]/g, ''))}
                             placeholder="Enter your full name"
+                            autoCapitalize="words"
                         />
 
                         <Text style={[styles.label, { color: colors.subtext }]}>Email Address</Text>
@@ -109,13 +110,19 @@ export default function ApplicationFormScreen({ route, navigation }: any) {
                             value={email}
                             onChangeText={setEmail}
                             placeholder="Enter your email"
+                            keyboardType="email-address"
+                            autoCapitalize="none"
+                            autoCorrect={false}
+                            textContentType="emailAddress"
                         />
 
                         <Text style={[styles.label, { color: colors.subtext }]}>Contact Number</Text>
                         <Input
                             value={phone}
-                            onChangeText={setPhone}
+                            onChangeText={(val) => setPhone(val.replace(/[^0-9]/g, ''))}
                             placeholder="Enter your phone number"
+                            keyboardType="phone-pad"
+                            maxLength={11}
                         />
 
                         <Text style={[styles.sectionHeading, { color: colors.text, marginTop: 12 }]}>Pitch</Text>

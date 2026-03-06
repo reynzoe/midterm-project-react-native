@@ -9,6 +9,7 @@ interface JobsContextType {
     appliedJobs: JobApplication[];
     addApplied: (application: JobApplication) => void;
     isApplied: (id: string) => boolean;
+    removeApplied: (id: string) => void;
 }
 
 export const JobsContext = createContext<JobsContextType>({} as JobsContextType);
@@ -51,8 +52,12 @@ export const JobsProvider = ({ children }: { children: ReactNode }) => {
 
     const isApplied = (id: string) => appliedJobs.some(app => app.job.id === id);
 
+    const removeApplied = (id: string) => {
+        setAppliedJobs(prev => prev.filter(app => app.job.id !== id));
+    };
+
     return (
-        <JobsContext.Provider value={{ savedJobs, saveJob, removeJob, appliedJobs, addApplied, isApplied }}>
+        <JobsContext.Provider value={{ savedJobs, saveJob, removeJob, appliedJobs, addApplied, isApplied, removeApplied }}>
             {children}
         </JobsContext.Provider>
     );
