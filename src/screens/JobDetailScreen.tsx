@@ -8,7 +8,7 @@ import { JobsContext } from '../context/JobsContext';
 export default function JobDetailScreen({ route, navigation }: any) {
     const { job } = route.params;
     const { colors } = useContext(ThemeContext);
-    const { savedJobs, saveJob, removeJob } = useContext(JobsContext);
+    const { savedJobs, saveJob, removeJob, isApplied } = useContext(JobsContext);
 
     const isSaved = savedJobs.some(j => j.id === job.id);
     const toggleSave = () => {
@@ -24,13 +24,15 @@ export default function JobDetailScreen({ route, navigation }: any) {
         [job.description],
     );
 
+    const applied = isApplied ? isApplied(job.id) : false;
+
     return (
         <View style={[styles.container, { backgroundColor: colors.background }]}>
             <Header
                 showBack
                 onBackPress={() => navigation.goBack()}
                 showHome
-                onHomePress={() => navigation.reset({ index: 0, routes: [{ name: 'JobFinder' }] })}
+                onHomePress={() => navigation.reset({ index: 0, routes: [{ name: 'Main', params: { screen: 'JobFinderTab' } }] })}
             />
             <ScrollView contentContainerStyle={[styles.content, { paddingBottom: 40 }]}>
                 <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border, shadowColor: colors.shadow }]}>
@@ -70,11 +72,14 @@ export default function JobDetailScreen({ route, navigation }: any) {
                     ) : null}
                     <View style={styles.actionsRow}>
                         <TouchableOpacity
-                            style={[styles.primaryBtn, { backgroundColor: colors.primary }]}
-                            onPress={() => navigation.navigate('Apply', { job })}
-                            activeOpacity={0.9}
+                            style={[styles.primaryBtn, { backgroundColor: applied ? colors.primaryMuted : colors.primary }]}
+                            onPress={applied ? undefined : () => navigation.navigate('Apply', { job, fromSaved: false })}
+                            activeOpacity={applied ? 1 : 0.9}
+                            disabled={applied}
                         >
-                            <Text style={styles.primaryText}>Quick Apply</Text>
+                            <Text style={[styles.primaryText, applied ? { color: colors.text } : null]}>
+                                {applied ? 'Applied' : 'Quick Apply'}
+                            </Text>
                         </TouchableOpacity>
                         <TouchableOpacity
                             style={[

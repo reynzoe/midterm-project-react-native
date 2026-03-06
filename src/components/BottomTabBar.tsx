@@ -27,14 +27,11 @@ export default function BottomTabBar({ state, navigation }: BottomTabBarProps) {
     const isActive = (route: string) => state.routeNames[state.index] === route;
 
     useEffect(() => {
-        const target =
-            state.index === 0
-                ? 0
-                : barWidth > 0
-                    ? barWidth - (barWidth / 3) // shift pill toward second tab area
-                    : 0;
+        const count = state.routes.length || 1;
+        const segment = barWidth > 0 ? barWidth / count : 0;
+        const target = segment * state.index;
         Animated.spring(pillX, { toValue: target, useNativeDriver: true, friction: 8, tension: 140 }).start();
-    }, [state.index, barWidth, pillX]);
+    }, [state.index, barWidth, pillX, state.routes.length]);
 
     const onLayoutBar = (e: LayoutChangeEvent) => {
         setBarWidth(e.nativeEvent.layout.width - 32); // paddingHorizontal 16*2
@@ -65,13 +62,13 @@ export default function BottomTabBar({ state, navigation }: BottomTabBarProps) {
                     ]}
                 />
 
-                <TabButton
-                    label="Saved"
-                    icon="bookmark"
-                    active={isActive('SavedTab')}
-                    onPress={() => goTo('SavedTab')}
-                    colors={colors}
-                />
+            <TabButton
+                label="Saved"
+                icon="bookmark"
+                active={isActive('SavedTab')}
+                onPress={() => goTo('SavedTab')}
+                colors={colors}
+            />
 
             <TouchableOpacity
                 activeOpacity={0.9}
@@ -93,13 +90,13 @@ export default function BottomTabBar({ state, navigation }: BottomTabBarProps) {
                 </Animated.View>
             </TouchableOpacity>
 
-                <TabButton
-                    label="Browse"
-                    icon="grid"
-                    active={isActive('JobFinderTab')}
-                    onPress={() => goTo('JobFinderTab')}
-                    colors={colors}
-                />
+            <TabButton
+                label="Applied"
+                icon="check-circle"
+                active={isActive('AppliedTab')}
+                onPress={() => goTo('AppliedTab')}
+                colors={colors}
+            />
             </View>
         </View>
     );

@@ -1,17 +1,21 @@
 import React, { createContext, useState, ReactNode } from 'react';
 import { Alert } from 'react-native';
-import { Job } from '../types/job';
+import { Job, JobApplication } from '../types/job';
 
 interface JobsContextType {
     savedJobs: Job[];
     saveJob: (job: Job) => void;
     removeJob: (id: string) => void;
+    appliedJobs: JobApplication[];
+    addApplied: (application: JobApplication) => void;
+    isApplied: (id: string) => boolean;
 }
 
 export const JobsContext = createContext<JobsContextType>({} as JobsContextType);
 
 export const JobsProvider = ({ children }: { children: ReactNode }) => {
     const [savedJobs, setSavedJobs] = useState<Job[]>([]);
+    const [appliedJobs, setAppliedJobs] = useState<JobApplication[]>([]);
 
     const saveJob = (job: Job) => {
         const isDuplicate = savedJobs.some(
@@ -37,8 +41,18 @@ export const JobsProvider = ({ children }: { children: ReactNode }) => {
         setSavedJobs(prev => prev.filter(job => job.id !== id));
     };
 
+    const addApplied = (application: JobApplication) => {
+        setAppliedJobs(prev => {
+            const exists = prev.some(app => app.job.id === application.job.id);
+            if (exists) return prev;
+            return [application, ...prev];
+        });
+    };
+
+    const isApplied = (id: string) => appliedJobs.some(app => app.job.id === id);
+
     return (
-        <JobsContext.Provider value={{ savedJobs, saveJob, removeJob }}>
+        <JobsContext.Provider value={{ savedJobs, saveJob, removeJob, appliedJobs, addApplied, isApplied }}>
             {children}
         </JobsContext.Provider>
     );

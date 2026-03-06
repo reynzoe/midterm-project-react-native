@@ -6,10 +6,13 @@ import Header from '../components/Header';
 import Input from '../components/ui/Input';
 import Button from '../components/ui/Button';
 import Card from '../components/ui/Card';
+import { JobsContext } from '../context/JobsContext';
+import { JobApplication } from '../types/job';
 
 export default function ApplicationFormScreen({ route, navigation }: any) {
     const { job, fromSaved } = route.params || {};
     const { colors } = useContext(ThemeContext);
+    const { removeJob, addApplied } = useContext(JobsContext);
 
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
@@ -32,6 +35,15 @@ export default function ApplicationFormScreen({ route, navigation }: any) {
         if (!isPhoneValid(phone)) return Alert.alert('Validation Error', 'Please enter a valid 11-digit phone number (e.g. 09123456789).');
         if (!isNotEmpty(why)) return Alert.alert('Validation Error', 'Please tell us why we should hire you.');
 
+        const application: JobApplication = {
+            job,
+            name,
+            email,
+            phone,
+            why,
+            submittedAt: Date.now(),
+        };
+
         Alert.alert('Application Submitted!', 'We received your application.', [
             {
                 text: 'Okay',
@@ -41,9 +53,14 @@ export default function ApplicationFormScreen({ route, navigation }: any) {
                     setPhone('');
                     setWhy('');
 
+                    addApplied(application);
+                    if (fromSaved && job?.id) {
+                        removeJob(job.id);
+                    }
+
                     navigation.reset({
                         index: 0,
-                        routes: [{ name: 'JobFinder' }],
+                        routes: [{ name: 'Main', params: { screen: 'JobFinderTab' } }],
                     });
                 },
             },
@@ -56,7 +73,7 @@ export default function ApplicationFormScreen({ route, navigation }: any) {
                 showBack
                 onBackPress={() => navigation.goBack()}
                 showHome
-                onHomePress={() => navigation.reset({ index: 0, routes: [{ name: 'JobFinder' }] })}
+                onHomePress={() => navigation.reset({ index: 0, routes: [{ name: 'Main', params: { screen: 'JobFinderTab' } }] })}
             />
             <KeyboardAvoidingView
                 style={{ flex: 1 }}

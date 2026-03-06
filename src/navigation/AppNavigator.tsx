@@ -7,6 +7,7 @@ import ApplicationFormScreen from '../screens/ApplicationFormScreen';
 import JobDetailScreen from '../screens/JobDetailScreen';
 import StartScreen from '../screens/StartScreen';
 import BottomTabBar from '../components/BottomTabBar';
+import AppliedJobsScreen from '../screens/AppliedJobsScreen';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -34,6 +35,11 @@ function MainTabs() {
             <Tab.Screen
                 name="JobFinderTab"
                 component={JobFinderScreen}
+                initialParams={{ showTabBar: false }}
+            />
+            <Tab.Screen
+                name="AppliedTab"
+                component={AppliedJobsScreen}
                 initialParams={{ showTabBar: false }}
             />
         </Tab.Navigator>

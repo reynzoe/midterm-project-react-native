@@ -31,11 +31,12 @@ export default function JobCard({
     showRemoveAction = false,
     onRemove,
 }: JobCardProps) {
-    const { saveJob, removeJob, savedJobs } = useContext(JobsContext);
+    const { saveJob, removeJob, savedJobs, isApplied } = useContext(JobsContext);
     const { colors } = useContext(ThemeContext);
 
     const isSaved = savedJobs.find(j => j.id === job.id);
     const pulse = useRef(new Animated.Value(1)).current;
+    const applied = isApplied ? isApplied(job.id) : false;
 
     const handleSaveToggle = () => {
         if (isSaved) {
@@ -126,11 +127,17 @@ export default function JobCard({
             <View style={styles.actionsRow}>
                 {showQuickApply && (
                     <TouchableOpacity
-                        style={[styles.quickApplyBtn, { backgroundColor: colors.primary }]}
-                        onPress={onApply}
-                        activeOpacity={0.9}
+                        style={[
+                            styles.quickApplyBtn,
+                            { backgroundColor: applied ? colors.primaryMuted : colors.primary },
+                        ]}
+                        onPress={applied ? undefined : onApply}
+                        activeOpacity={applied ? 1 : 0.9}
+                        disabled={applied}
                     >
-                        <Text style={styles.quickApplyText}>Quick Apply</Text>
+                        <Text style={[styles.quickApplyText, applied ? { color: colors.text } : null]}>
+                            {applied ? 'Applied' : 'Quick Apply'}
+                        </Text>
                     </TouchableOpacity>
                 )}
                 {onPress ? (
