@@ -58,13 +58,18 @@ export default function ApplicationFormScreen({ route, navigation }: any) {
                         removeJob(job.id);
                     }
 
-                    navigation.reset({
-                        index: 0,
-                        routes: [{ name: 'Main', params: { screen: 'JobFinderTab' } }],
-                    });
+                    goBackToMain();
                 },
             },
         ]);
+    };
+
+    const goBackToMain = () => {
+        try {
+            navigation.pop(2);
+        } catch {
+            navigation.navigate('Main', { screen: 'JobFinderTab' });
+        }
     };
 
     return (
@@ -73,7 +78,7 @@ export default function ApplicationFormScreen({ route, navigation }: any) {
                 showBack
                 onBackPress={() => navigation.goBack()}
                 showHome
-                onHomePress={() => navigation.reset({ index: 0, routes: [{ name: 'Main', params: { screen: 'JobFinderTab' } }] })}
+                onHomePress={goBackToMain}
             />
             <KeyboardAvoidingView
                 style={{ flex: 1 }}
